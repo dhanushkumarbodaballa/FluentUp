@@ -9,16 +9,18 @@ import {
   Languages,
   CheckCircle2,
   ArrowRight,
+  ArrowLeft,
   GraduationCap,
   Headphones,
   BookOpen,
   TrendingUp,
   Moon,
   Sun,
-  ShieldCheck
+  ShieldCheck,
+  KeyRound
 } from 'lucide-react';
 import { AuthUser } from '../types';
-import { loginUser, registerUser } from '../services/api';
+import { loginUser, registerUser, resetPassword } from '../services/api';
 
 interface LoginPageProps {
   onLoginSuccess: (user: AuthUser) => void;
@@ -33,30 +35,53 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   isDarkMode,
   onToggleDarkMode,
 }) => {
-  const [tab, setTab] = useState<'signin' | 'signup'>('signin');
+  const [tab, setTab] = useState<'signin' | 'signup' | 'forgot'>('signin');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // Form states
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [forgotNewPassword, setForgotNewPassword] = useState('');
+  const [forgotConfirmPassword, setForgotConfirmPassword] = useState('');
   const [englishLevel, setEnglishLevel] = useState<'beginner' | 'intermediate' | 'advanced'>('beginner');
   const [preferredLanguage, setPreferredLanguage] = useState<'en_te' | 'en_hi' | 'en_only'>('en_te');
 
-  const handleTabSwitch = (newTab: 'signin' | 'signup') => {
+  const handleTabSwitch = (newTab: 'signin' | 'signup' | 'forgot') => {
     setTab(newTab);
     setError(null);
+    setSuccessMessage(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setSuccessMessage(null);
     setIsLoading(true);
 
     try {
-      if (tab === 'signin') {
+      if (tab === 'forgot') {
+        if (!email.trim() || !forgotNewPassword || !forgotConfirmPassword) {
+          throw new Error('Please enter your email and choose a new password');
+        }
+        if (forgotNewPassword.length < 6) {
+          throw new Error('New password must be at least 6 characters');
+        }
+        if (forgotNewPassword !== forgotConfirmPassword) {
+          throw new Error('Passwords do not match. Please re-enter.');
+        }
+        const res = await resetPassword(email.trim(), forgotNewPassword);
+        setSuccessMessage(res.message || 'Password reset successfully! You can now sign in.');
+        setPassword('');
+        setForgotNewPassword('');
+        setForgotConfirmPassword('');
+        setTimeout(() => {
+          setTab('signin');
+        }, 1800);
+      } else if (tab === 'signin') {
         if (!email.trim() || !password) {
           throw new Error('Please fill in both email and password');
         }
@@ -216,40 +241,67 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                 </div>
 
                 <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
-                  {tab === 'signin' ? 'Welcome back!' : 'Create your Learner Account'}
+                  {tab === 'forgot'
+                    ? 'Reset your Password'
+                    : tab === 'signin'
+                    ? 'Welcome back!'
+                    : 'Create your Learner Account'}
                 </h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  {tab === 'signin'
+                  {tab === 'forgot'
+                    ? 'Enter your registered email and choose a new password'
+                    : tab === 'signin'
                     ? 'Sign in to access your saved conversations & vocabulary'
                     : 'Get started for free with your personal AI English coach'}
                 </p>
               </div>
 
-              {/* Tab Selector */}
-              <div className="flex p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl mb-4">
-                <button
-                  type="button"
-                  onClick={() => handleTabSwitch('signin')}
-                  className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
-                    tab === 'signin'
-                      ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-xs'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  Sign In
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleTabSwitch('signup')}
-                  className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
-                    tab === 'signup'
-                      ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-xs'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  Sign Up
-                </button>
-              </div>
+              {/* Tab Selector or Back to Sign In */}
+              {tab === 'forgot' ? (
+                <div className="mb-4">
+                  <button
+                    type="button"
+                    onClick={() => handleTabSwitch('signin')}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors cursor-pointer"
+                  >
+                    <ArrowLeft className="w-3.5 h-3.5" />
+                    <span>Back to Sign In</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="flex p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl mb-4">
+                  <button
+                    type="button"
+                    onClick={() => handleTabSwitch('signin')}
+                    className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
+                      tab === 'signin'
+                        ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Sign In
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleTabSwitch('signup')}
+                    className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
+                      tab === 'signup'
+                        ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Sign Up
+                  </button>
+                </div>
+              )}
+
+              {/* Success Feedback Banner */}
+              {successMessage && (
+                <div className="mb-3.5 p-3 text-xs text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 rounded-xl flex items-center gap-2 animate-fadeIn">
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
+                  <span>{successMessage}</span>
+                </div>
+              )}
 
               {/* Error Message */}
               {error && (
@@ -300,31 +352,91 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                      <Lock className="w-4 h-4" />
+                {tab === 'forgot' ? (
+                  <>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                        New Password
+                      </label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                          <Lock className="w-4 h-4" />
+                        </div>
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          required
+                          value={forgotNewPassword}
+                          onChange={(e) => setForgotNewPassword(e.target.value)}
+                          placeholder="At least 6 characters"
+                          className="w-full pl-9 pr-10 py-2.5 text-xs bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 dark:text-white placeholder-slate-400"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                        >
+                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
                     </div>
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full pl-9 pr-10 py-2.5 text-xs bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 dark:text-white placeholder-slate-400"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
-                    >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                        Confirm New Password
+                      </label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                          <Lock className="w-4 h-4" />
+                        </div>
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          required
+                          value={forgotConfirmPassword}
+                          onChange={(e) => setForgotConfirmPassword(e.target.value)}
+                          placeholder="Re-enter your new password"
+                          className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 dark:text-white placeholder-slate-400"
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                        Password
+                      </label>
+                      {tab === 'signin' && (
+                        <button
+                          type="button"
+                          onClick={() => handleTabSwitch('forgot')}
+                          className="text-[11px] font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 hover:underline cursor-pointer"
+                        >
+                          Forgot password?
+                        </button>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                        <Lock className="w-4 h-4" />
+                      </div>
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="••••••••"
+                        className="w-full pl-9 pr-10 py-2.5 text-xs bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 dark:text-white placeholder-slate-400"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {tab === 'signup' && (
                   <>
@@ -434,7 +546,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                     <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
                     <>
-                      <span>{tab === 'signin' ? 'Sign In to FluentUp' : 'Create My Account'}</span>
+                      <span>
+                        {tab === 'forgot'
+                          ? 'Reset Password'
+                          : tab === 'signin'
+                          ? 'Sign In to FluentUp'
+                          : 'Create My Account'}
+                      </span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </>
                   )}

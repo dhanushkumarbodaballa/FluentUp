@@ -77,6 +77,26 @@ export async function registerUser(params: {
   return data;
 }
 
+export async function resetPassword(email: string, new_password: string): Promise<{ status: string; message: string; email: string }> {
+  const res = await fetch(`${BASE_URL}/auth/forgot-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email.trim(), new_password }),
+  });
+  if (!res.ok) {
+    let errorMsg = 'Password reset failed. Please check your email.';
+    try {
+      const errorData = await res.json();
+      errorMsg = errorData.detail || errorData.message || errorMsg;
+    } catch {
+      const text = await res.text().catch(() => '');
+      if (text && text.length < 200) errorMsg = text;
+    }
+    throw new Error(errorMsg);
+  }
+  return await res.json();
+}
+
 export async function fetchCurrentUser(): Promise<{ user: AuthUser }> {
   const res = await fetch(`${BASE_URL}/auth/me`, {
     headers: getHeaders(false),

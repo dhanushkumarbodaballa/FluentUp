@@ -43,6 +43,10 @@ class LoginRequest(BaseModel):
     email: str
     password: str
 
+class ForgotPasswordRequest(BaseModel):
+    email: str
+    new_password: str
+
 class ChatRequest(BaseModel):
     conversation_id: Optional[str] = None
     message: str
@@ -151,6 +155,18 @@ def login(data: LoginRequest):
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Login failed: {str(e)}")
+
+@app.post("/api/auth/forgot-password")
+@app.post("/api/auth/reset-password")
+def forgot_password(data: ForgotPasswordRequest):
+    try:
+        return db.reset_password(email=data.email, new_password=data.new_password)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Password reset failed: {str(e)}")
 
 @app.get("/api/auth/me")
 def get_me(authorization: Optional[str] = Header(None)):

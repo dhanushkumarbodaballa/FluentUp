@@ -287,6 +287,40 @@ def login_user(email: str, password: str) -> Dict[str, Any]:
         "token": token
     }
 
+def reset_password(email: str, new_password: str) -> Dict[str, Any]:
+    email = email.strip().lower()
+    if not email or not new_password:
+        raise ValueError("Email and new password are required")
+    if len(new_password) < 6:
+        raise ValueError("Password must be at least 6 characters")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, name, email FROM users WHERE email = ?", (email,))
+    row = cursor.fetchone()
+    if not row:
+        conn.close()
+        raise ValueError("No account found with this email address. Please check your email or register.")
+
+    user_id = row["id"]
+    pw_hash, pw_salt = hash_password(new_password)
+
+    cursor.execute("""
+        UPDATE users SET password_hash = ?, password_salt = ? WHERE id = ?
+    """, (pw_hash, pw_salt, user_id))
+
+    # Invalidate old sessions for safety
+    cursor.execute("DELETE FROM user_sessions WHERE user_id = ?", (user_id,))
+
+    conn.commit()
+    conn.close()
+
+    return {
+        "status": "success",
+        "message": "Password reset successfully. You can now log in with your new password.",
+        "email": email
+    }
+
 def get_user_from_token(token: str) -> Optional[Dict[str, Any]]:
     if not token:
         return None
