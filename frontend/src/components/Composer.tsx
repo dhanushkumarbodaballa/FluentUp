@@ -26,8 +26,8 @@ interface ComposerProps {
   onResetTranscript: () => void;
   languageMode: 'en_te' | 'en_hi' | 'en_only';
   onToggleLanguageMode: () => void;
-  learningTarget?: 'english' | 'hindi';
-  onToggleLearningTarget?: () => void;
+  learningTarget?: 'english' | 'hindi' | 'japanese';
+  onToggleLearningTarget?: (target?: 'english' | 'hindi' | 'japanese') => void;
 }
 
 export const Composer: React.FC<ComposerProps> = ({
@@ -170,7 +170,9 @@ export const Composer: React.FC<ComposerProps> = ({
                 </>
               ) : (
                 <span className="text-slate-400">
-                  {learningTarget === 'hindi'
+                  {learningTarget === 'japanese'
+                    ? "Speak now in English or Japanese... Maya will translate & teach you Japanese!"
+                    : learningTarget === 'hindi'
                     ? "Speak now in English or Hindi... Maya will translate & teach you Hindi!"
                     : "Speak now in English... Maya is listening."}
                 </span>
@@ -186,7 +188,9 @@ export const Composer: React.FC<ComposerProps> = ({
               onChange={(e) => setText(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={
-                learningTarget === 'hindi'
+                learningTarget === 'japanese'
+                  ? "Speak or type any word to translate & learn in Japanese... (e.g. 'Water', 'Thank you', 'Delicious')"
+                  : learningTarget === 'hindi'
                   ? "Speak or type any word to translate & learn in Hindi... (e.g. 'Water', 'How are you?')"
                   : "Ask anything, say something in English, or talk with Maya..."
               }
@@ -202,15 +206,38 @@ export const Composer: React.FC<ComposerProps> = ({
                 {/* Tutor Goal Mode Switcher Pill */}
                 {onToggleLearningTarget && (
                   <button
-                    onClick={onToggleLearningTarget}
-                    title="Toggle Tutor Mode: English Tutor ↔ Hindi Tutor"
+                    onClick={() => {
+                      if (learningTarget === 'english') onToggleLearningTarget('hindi');
+                      else if (learningTarget === 'hindi') onToggleLearningTarget('japanese');
+                      else onToggleLearningTarget('english');
+                    }}
+                    title="Toggle Tutor Mode: English ↔ Hindi ↔ Japanese"
                     className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all shadow-2xs ${
-                      learningTarget === 'hindi'
+                      learningTarget === 'japanese'
+                        ? 'bg-rose-100 dark:bg-rose-950/80 text-rose-900 dark:text-rose-200 border border-rose-300 dark:border-rose-800'
+                        : learningTarget === 'hindi'
                         ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-800'
                         : 'bg-brand-50 dark:bg-brand-950/80 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-900'
                     }`}
                   >
-                    <span>{learningTarget === 'hindi' ? '🇮🇳 Hindi Tutor' : '🎓 English Tutor'}</span>
+                    <span>
+                      {learningTarget === 'japanese'
+                        ? '🇯🇵 Japanese Tutor'
+                        : learningTarget === 'hindi'
+                        ? '🇮🇳 Hindi Tutor'
+                        : '🎓 English Tutor'}
+                    </span>
+                  </button>
+                )}
+
+                {/* Learn from Basics shortcut button */}
+                {learningTarget === 'japanese' && (
+                  <button
+                    onClick={() => onSendMessage("Teach me Japanese from the basics (Lesson 1)")}
+                    title="Start Japanese Beginner Course (Lesson 1)"
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors shadow-2xs"
+                  >
+                    <span>🌱 Basics (Lesson 1)</span>
                   </button>
                 )}
 

@@ -153,7 +153,7 @@ export async function sendChatMessage(params: {
   conversation_id?: string;
   message: string;
   audio_duration_seconds?: number;
-  learning_target?: 'english' | 'hindi';
+  learning_target?: 'english' | 'hindi' | 'japanese';
 }): Promise<{
   conversation_id: string;
   message_id: string;

@@ -24,7 +24,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 }) => {
   const [prefLang, setPrefLang] = useState<'en_te' | 'en_hi' | 'en_only'>(settings?.preferred_language || 'en_te');
   const [level, setLevel] = useState<'beginner' | 'intermediate' | 'advanced'>(settings?.english_level || 'beginner');
-  const [learningTarget, setLearningTarget] = useState<'english' | 'hindi'>(settings?.learning_target || 'english');
+  const [learningTarget, setLearningTarget] = useState<'english' | 'hindi' | 'japanese'>(settings?.learning_target || 'english');
   const [speed, setSpeed] = useState<number>(settings?.voice_speed || 1.0);
   const [autoSpeak, setAutoSpeak] = useState<boolean>(settings?.auto_speak === 1);
   const [isSaving, setIsSaving] = useState(false);
@@ -78,7 +78,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
             <div>
               <h2 className="text-base font-bold text-slate-900 dark:text-white">Settings & Preferences</h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Personalize your English learning buddy</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Personalize your learning tutor</p>
             </div>
           </div>
 
@@ -95,7 +95,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <Sparkles className="w-4 h-4 text-brand-500" />
               <span>Learning Goal / Tutor Mode</span>
             </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               <button
                 type="button"
                 onClick={() => setLearningTarget('english')}
@@ -108,8 +108,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 <div className="font-bold flex items-center gap-1.5 text-slate-900 dark:text-white">
                   <span>🎓 Learn English</span>
                 </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                  Maya acts as your English speaking coach, fixing grammar and boosting conversation confidence.
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                  English speaking coach with grammar tips.
                 </div>
               </button>
 
@@ -123,10 +123,27 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 }`}
               >
                 <div className="font-bold flex items-center gap-1.5 text-slate-900 dark:text-white">
-                  <span>🇮🇳 Learn Hindi (हिंदी)</span>
+                  <span>🇮🇳 Learn Hindi</span>
                 </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                  Maya acts as your Hindi Tutor, translating words/sentences with Devanagari, pronunciation, and daily examples!
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                  Hindi tutor with Devanagari, Romaji & sentences.
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setLearningTarget('japanese')}
+                className={`p-3 rounded-2xl border text-left transition-all ${
+                  learningTarget === 'japanese'
+                    ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200 font-medium ring-1 ring-rose-500'
+                    : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                }`}
+              >
+                <div className="font-bold flex items-center gap-1.5 text-slate-900 dark:text-white">
+                  <span>🇯🇵 Learn Japanese</span>
+                </div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                  Japanese tutor with Kanji/Kana, Romaji & daily dialogues.
                 </div>
               </button>
             </div>

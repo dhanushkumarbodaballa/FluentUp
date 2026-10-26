@@ -468,11 +468,428 @@ HINDI_TUTOR_DICTIONARY = {
     }
 }
 
+JAPANESE_TUTOR_DICTIONARY = {
+    "water": {
+        "kanji": "水",
+        "kana": "みず",
+        "rom": "Mizu / O-mizu",
+        "tip": "Usually spoken politely as 'お水' (O-mizu) in restaurants and conversations.",
+        "ex1": ("お水をください。", "O-mizu o kudasai.", "Please give me water."),
+        "ex2": ("冷たいお水を飲みますか？", "Tsumetai o-mizu o nomimasu ka?", "Would you like to drink cold water?"),
+        "practice": "O-mizu o kudasai"
+    },
+    "food": {
+        "kanji": "食べ物",
+        "kana": "たべもの",
+        "rom": "Tabemono",
+        "tip": "'Taberu' is the verb to eat. 'Gohan' is also used for a meal/rice.",
+        "ex1": ("日本の食べ物はとても美味しいです。", "Nihon no tabemono wa totemo oishii desu.", "Japanese food is very delicious."),
+        "ex2": ("好きな食べ物は何ですか？", "Sukina tabemono wa nan desu ka?", "What is your favorite food?"),
+        "practice": "Tabemono wa totemo oishii desu"
+    },
+    "tea": {
+        "kanji": "お茶",
+        "kana": "おちゃ",
+        "rom": "O-cha",
+        "tip": "Often refers to Japanese green tea, prefixed with the polite 'O-'.",
+        "ex1": ("温かいお茶をどうぞ。", "Atatakai o-cha o douzo.", "Please have some warm tea."),
+        "ex2": ("お茶を飲みましょう。", "O-cha o nomimashou.", "Let's drink tea."),
+        "practice": "O-cha o kudasai"
+    },
+    "friend": {
+        "kanji": "友達",
+        "kana": "ともだち",
+        "rom": "Tomodachi",
+        "tip": "'Tomodachi' is the standard everyday word for friend.",
+        "ex1": ("彼は私の友達です。", "Kare wa watashi no tomodachi desu.", "He is my friend."),
+        "ex2": ("友達と一緒に勉強します。", "Tomodachi to issho ni benkyou shimasu.", "I study together with my friend."),
+        "practice": "Watashi no tomodachi desu"
+    },
+    "thank you": {
+        "kanji": "ありがとうございます",
+        "kana": "ありがとうございます",
+        "rom": "Arigatou gozaimasu",
+        "tip": "Polite everyday gratitude. With close friends, you can just say 'Arigatou' or 'Doumo'.",
+        "ex1": ("手伝ってくれてありがとうございます。", "Tetsudatte kurete arigatou gozaimasu.", "Thank you very much for helping me."),
+        "ex2": ("いつもありがとうございます！", "Itsumo arigatou gozaimasu!", "Thank you as always!"),
+        "practice": "Arigatou gozaimasu"
+    },
+    "hello": {
+        "kanji": "こんにちは",
+        "kana": "こんにちは",
+        "rom": "Konnichiwa",
+        "tip": "Daytime greeting used from late morning to late afternoon.",
+        "ex1": ("皆さん、こんにちは！", "Minasan, konnichiwa!", "Hello everyone!"),
+        "ex2": ("こんにちは、お元気ですか？", "Konnichiwa, o-genki desu ka?", "Hello, how are you?"),
+        "practice": "Konnichiwa, o-genki desu ka?"
+    },
+    "good morning": {
+        "kanji": "おはようございます",
+        "kana": "おはようございます",
+        "rom": "Ohayou gozaimasu",
+        "tip": "Standard morning greeting. Friends and family simply say 'Ohayou'.",
+        "ex1": ("おはようございます！今日も一日頑張りましょう。", "Ohayou gozaimasu! Kyou mo ichinichi ganbarimashou.", "Good morning! Let's do our best today."),
+        "ex2": ("先生、おはようございます。", "Sensei, ohayou gozaimasu.", "Good morning, teacher."),
+        "practice": "Ohayou gozaimasu!"
+    },
+    "good night": {
+        "kanji": "おやすみなさい",
+        "kana": "おやすみなさい",
+        "rom": "Oyasuminasai",
+        "tip": "Farewell before going to bed. Casual version is 'Oyasumi'.",
+        "ex1": ("おやすみなさい、良い夢を。", "Oyasuminasai, yoi yume o.", "Good night, sweet dreams."),
+        "ex2": ("また明日、おやすみなさい。", "Mata ashita, oyasuminasai.", "See you tomorrow, good night."),
+        "practice": "Oyasuminasai, mata ashita"
+    },
+    "book": {
+        "kanji": "本",
+        "kana": "ほん",
+        "rom": "Hon",
+        "tip": "'Hon o yomu' means to read a book.",
+        "ex1": ("この本はとても面白いです。", "Kono hon wa totemo omoshiroi desu.", "This book is very interesting."),
+        "ex2": ("私は日本語の本を読んでいます。", "Watashi wa Nihongo no hon o yonde imasu.", "I am reading a Japanese book."),
+        "practice": "Hon o yonde imasu"
+    },
+    "house": {
+        "kanji": "家",
+        "kana": "いえ / うち",
+        "rom": "Ie / Uchi",
+        "tip": "'Uchi' is used when talking about one's own home, 'Ie' is general house.",
+        "ex1": ("私の家へようこそ！", "Watashi no ie e youkoso!", "Welcome to my house!"),
+        "ex2": ("早く家に帰りたいです。", "Hayaku ie ni kaeritai desu.", "I want to go home early."),
+        "practice": "Uchi ni kaerimasu"
+    },
+    "home": {
+        "kanji": "家",
+        "kana": "うち",
+        "rom": "Uchi / Ie",
+        "tip": "'Uchi' represents warm home.",
+        "ex1": ("家に帰りましょう。", "Ie ni kaerimashou.", "Let's go home."),
+        "ex2": ("今、家にいます。", "Ima, ie ni imasu.", "I am at home right now."),
+        "practice": "Ie ni kaerimasu"
+    },
+    "help": {
+        "kanji": "手伝い / 助け",
+        "kana": "てつだい / たすけ",
+        "rom": "Tetsudai / Tasuke",
+        "tip": "'Tetsudatte kudasai' means 'Please help me'. 'Tasukete!' is an urgent cry for help.",
+        "ex1": ("手伝っていただけますか？", "Tetsudatte itadakemasu ka?", "Could you please help me?"),
+        "ex2": ("何か手伝いましょうか？", "Nanika tetsudaimashou ka?", "Shall I help you with anything?"),
+        "practice": "Tetsudatte kudasai"
+    },
+    "time": {
+        "kanji": "時間",
+        "kana": "じかん",
+        "rom": "Jikan",
+        "tip": "'Ima nan-ji desu ka?' asks 'What time is it now?'.",
+        "ex1": ("今、何時ですか？", "Ima, nan-ji desu ka?", "What time is it right now?"),
+        "ex2": ("今は時間がありません。", "Ima wa jikan ga arimasen.", "I don't have time right now."),
+        "practice": "Ima, nan-ji desu ka?"
+    },
+    "money": {
+        "kanji": "お金",
+        "kana": "おかね",
+        "rom": "O-kane",
+        "tip": "Usually prefixed with polite 'O-'. 'Ikura desu ka?' asks 'How much is this?'.",
+        "ex1": ("これはいくらですか？", "Kore wa ikura desu ka?", "How much is this?"),
+        "ex2": ("お金を払います。", "O-kane o haraimasu.", "I will pay the money."),
+        "practice": "Kore wa ikura desu ka?"
+    },
+    "work": {
+        "kanji": "仕事",
+        "kana": "しごと",
+        "rom": "Shigoto",
+        "tip": "'Shigoto o suru' means to work. 'Otsukaresama desu' praises someone's hard work.",
+        "ex1": ("私は今仕事をしています。", "Watashi wa ima shigoto o shite imasu.", "I am working right now."),
+        "ex2": ("お仕事、お疲れ様です！", "O-shigoto, otsukaresama desu!", "Thank you for your hard work!"),
+        "practice": "Ima shigoto o shite imasu"
+    },
+    "delicious": {
+        "kanji": "美味しい",
+        "kana": "おいしい",
+        "rom": "Oishii",
+        "tip": "I-adjective. Casual exclamation is 'Umai!' or 'Oishii!'.",
+        "ex1": ("このラーメンは本当に美味しいです！", "Kono raamen wa hontou ni oishii desu!", "This ramen is really delicious!"),
+        "ex2": ("とても美味しいですね。", "Totemo oishii desu ne.", "It is very delicious, isn't it?"),
+        "practice": "Hontou ni oishii desu!"
+    },
+    "how are you": {
+        "kanji": "お元気ですか？",
+        "kana": "おげんきですか？",
+        "rom": "O-genki desu ka?",
+        "tip": "Polite greeting. The standard reply is 'Hai, genki desu' (Yes, I am fine).",
+        "ex1": ("お久しぶりです、お元気ですか？", "O-hisashiburi desu, o-genki desu ka?", "Long time no see, how are you?"),
+        "ex2": ("はい、とても元気です！", "Hai, totemo genki desu!", "Yes, I am doing great!"),
+        "practice": "Hai, totemo genki desu!"
+    },
+    "where are you going": {
+        "kanji": "どこへ行きますか？",
+        "kana": "どこへいきますか？",
+        "rom": "Doko e ikimasu ka?",
+        "tip": "The particle 'e' (written as へ) indicates destination direction.",
+        "ex1": ("今からどこへ行きますか？", "Ima kara doko e ikimasu ka?", "Where are you going from now?"),
+        "ex2": ("駅へ行きます。", "Eki e ikimasu.", "I am going to the station."),
+        "practice": "Eki e ikimasu"
+    },
+    "what is your name": {
+        "kanji": "お名前は何ですか？",
+        "kana": "おなまえはなんですか？",
+        "rom": "O-namae wa nan desu ka?",
+        "tip": "Reply with 'Watashi no namae wa [Name] desu'.",
+        "ex1": ("初めまして、お名前は何ですか？", "Hajimemashite, o-namae wa nan desu ka?", "Nice to meet you, what is your name?"),
+        "ex2": ("私の名前はマヤです。", "Watashi no namae wa Maya desu.", "My name is Maya."),
+        "practice": "Watashi no namae wa Maya desu"
+    },
+    "eat": {
+        "kanji": "食べる",
+        "kana": "たべる",
+        "rom": "Taberu (polite: Tabemasu)",
+        "tip": "Before eating, Japanese people say 'Itadakimasu'.",
+        "ex1": ("一緒にご飯を食べましょう！", "Issho ni gohan o tabemashou!", "Let's eat a meal together!"),
+        "ex2": ("朝ごはんを食べましたか？", "Asagohan o tabemashita ka?", "Did you eat breakfast?"),
+        "practice": "Gohan o tabemasu"
+    },
+    "drink": {
+        "kanji": "飲む",
+        "kana": "のむ",
+        "rom": "Nomu (polite: Nomimasu)",
+        "tip": "When cheering a drink, say 'Kanpai!'.",
+        "ex1": ("冷たいお茶を飲みます。", "Tsumetai o-cha o nomimasu.", "I drink cold tea."),
+        "ex2": ("コーヒーを飲みますか？", "Koohii o nomimasu ka?", "Will you drink coffee?"),
+        "practice": "O-mizu o nomimasu"
+    },
+    "go": {
+        "kanji": "行く",
+        "kana": "いく",
+        "rom": "Iku (polite: Ikimasu)",
+        "tip": "'Ikimashou!' means 'Let's go!'.",
+        "ex1": ("学校へ行きます。", "Gakkou e ikimasu.", "I am going to school."),
+        "ex2": ("一緒に行きましょう！", "Issho ni ikimashou!", "Let's go together!"),
+        "practice": "Issho ni ikimashou"
+    },
+    "come": {
+        "kanji": "来る",
+        "kana": "くる",
+        "rom": "Kuru (polite: Kimasu)",
+        "tip": "'Kite kudasai' means 'Please come'.",
+        "ex1": ("こちらへ来てください。", "Kochira e kite kudasai.", "Please come this way."),
+        "ex2": ("明日また来ます。", "Ashita mata kimasu.", "I will come again tomorrow."),
+        "practice": "Kochira e kite kudasai"
+    },
+    "speak": {
+        "kanji": "話す",
+        "kana": "はなす",
+        "rom": "Hanasu (polite: Hanashimasu)",
+        "tip": "'Nihongo o hanasemasu ka?' means 'Can you speak Japanese?'.",
+        "ex1": ("日本語を話せますか？", "Nihongo o hanasemasu ka?", "Can you speak Japanese?"),
+        "ex2": ("ゆっくり話してください。", "Yukkuri hanashite kudasai.", "Please speak slowly."),
+        "practice": "Nihongo o benkyou shite imasu"
+    },
+    "learn": {
+        "kanji": "学ぶ / 勉強する",
+        "kana": "まなぶ / べんきょうする",
+        "rom": "Manabu / Benkyou suru",
+        "tip": "'Benkyou shite imasu' means 'I am studying'.",
+        "ex1": ("私は毎日日本語を勉強しています。", "Watashi wa mainichi Nihongo o benkyou shite imasu.", "I study Japanese every day."),
+        "ex2": ("日本語を学ぶのは楽しいです！", "Nihongo o manabu no wa tanoshii desu!", "Learning Japanese is fun!"),
+        "practice": "Mainichi Nihongo o benkyou shimasu"
+    }
+}
+
+# Structured Beginner Curriculum for Japanese from Basics
+JAPANESE_BASICS_LESSONS = {
+    1: {
+        "title": "Lesson 1: Japanese Foundations & Essential Greetings",
+        "description": "How Japanese sounds work and the 6 golden greetings",
+        "content": (
+            "🌸 **Japanese Basics — Lesson 1: How Japanese Works & Essential Greetings (挨拶)**\n\n"
+            "Welcome to learning Japanese from the basics! Here are the 3 foundational rules to speak Japanese easily:\n"
+            "1. **5 Pure Vowels:** Japanese uses only 5 crisp vowel sounds: **A** (ah), **I** (ee), **U** (oo), **E** (eh), **O** (oh).\n"
+            "2. **Romaji (Alphabet):** We provide Romaji (English letters) next to every word so you can read and pronounce it right away!\n"
+            "3. **Politeness:** Adding *'Gozaimasu'* or *'Desu'* shows respect and makes your speech natural and polite.\n\n"
+            "🗣️ **The 6 Golden Greetings Every Learner Must Know:**\n"
+            "1. **こんにちは** (*Konnichiwa*) — Hello / Good day\n"
+            "   *(Tip: The ending 'wa' is written with the Hiragana 'ha', pronounced 'wa')*\n"
+            "2. **おはようございます** (*Ohayou gozaimasu*) — Good morning (Polite)\n"
+            "   *(Casual with friends: just 'Ohayou')*\n"
+            "3. **こんばんは** (*Konbanwa*) — Good evening\n"
+            "4. **ありがとうございます** (*Arigatou gozaimasu*) — Thank you very much\n"
+            "   *(Casual: 'Arigatou' or 'Doumo')*\n"
+            "5. **すみません** (*Sumimasen*) — Excuse me / Sorry / Pardon\n"
+            "   *(Super useful: in cafes, asking for help, or getting someone's attention!)*\n"
+            "6. **さようなら** (*Sayounara*) — Goodbye\n"
+            "   *(Casual with friends: 'Jaa ne' or 'Mata ne' - See you later!)*\n\n"
+            "👉 **Speaking Drill:** Repeat out loud 3 times:\n"
+            "✨ *'Arigatou gozaimasu'* (Thank you very much!)\n"
+            "✨ *'Sumimasen'* (Excuse me!)\n\n"
+            "Whenever you're ready, say **'Next lesson'** or tap **'Start Lesson 2'** below!"
+        ),
+        "suggested_replies": [
+            "Start Lesson 2: Self-Introduction",
+            "How to pronounce 'Arigatou gozaimasu'?",
+            "How to say 'Excuse me' in Japanese?"
+        ]
+    },
+    2: {
+        "title": "Lesson 2: Self-Introduction (Hajimemashite)",
+        "description": "Introduce yourself naturally in Japanese",
+        "content": (
+            "🙋‍♂️ **Japanese Basics — Lesson 2: Self-Introduction (自己紹介 - Jiko Shoukai)**\n\n"
+            "When meeting someone in Japan for the first time, you use this magical 3-step introduction:\n\n"
+            "**Step 1: The Opening**\n"
+            "• **初めまして** (*Hajimemashite*)\n"
+            "  Meaning: 'Nice to meet you' (Only used the very first time you meet someone).\n\n"
+            "**Step 2: State Your Name**\n"
+            "• **私は [Your Name] です** (*Watashi wa [Name] desu*)\n"
+            "  - **私 (Watashi)** = I / Me\n"
+            "  - **は (wa)** = Topic particle (marks the topic: 'As for me...')\n"
+            "  - **です (desu)** = Am / Is (polite copula, sounds like 'dess')\n"
+            "  *Example:* 私はダヌシュです。 (*Watashi wa Dhanush desu.*) — 'I am Dhanush.'\n\n"
+            "**Step 3: The Polite Closing**\n"
+            "• **よろしくお願いします** (*Yoroshiku onegaishimasu*)\n"
+            "  Meaning: 'Please treat me kindly / Looking forward to working with you.' (Essential Japanese social etiquette!).\n\n"
+            "💬 **Full Self-Introduction Example:**\n"
+            "\"初めまして！ 私はダヌシュです。 よろしくお願いします！\"\n"
+            "*(Hajimemashite! Watashi wa Dhanush desu. Yoroshiku onegaishimasu!)*\n\n"
+            "👉 **Speaking Drill:** Try introducing yourself! Say:\n"
+            "✨ *'Hajimemashite! Watashi wa [your name] desu.'*\n\n"
+            "Ready for Lesson 3 (Numbers 1 to 10)?"
+        ),
+        "suggested_replies": [
+            "Start Lesson 3: Numbers 1 to 10",
+            "What does 'Yoroshiku onegaishimasu' mean?",
+            "How do I say 'I am from India / America'?"
+        ]
+    },
+    3: {
+        "title": "Lesson 3: Numbers 1 to 10 (数字 - Sūji)",
+        "description": "Master Japanese numbers and counting easily",
+        "content": (
+            "🔢 **Japanese Basics — Lesson 3: Numbers 1 to 10 (数字 - Sūji)**\n\n"
+            "Counting in Japanese is rhythmic and very easy to remember! Let's learn 1 to 10:\n\n"
+            "• **1:** 一 (いち / *Ichi*)\n"
+            "• **2:** 二 (に / *Ni*)\n"
+            "• **3:** 三 (さん / *San*)\n"
+            "• **4:** 四 (よん / *Yon* or し / *Shi*)\n"
+            "• **5:** 五 (ご / *Go*)\n"
+            "• **6:** 六 (ろく / *Roku*)\n"
+            "• **7:** 七 (なな / *Nana* or しち / *Shichi*)\n"
+            "• **8:** 八 (はち / *Hachi*)\n"
+            "• **9:** 九 (きゅう / *Kyuu* or く / *Ku*)\n"
+            "• **10:** 十 (じゅう / *Juu*)\n\n"
+            "💡 **Bonus Magic Trick (11 to 20):**\n"
+            "Japanese numbers are modular! Just combine 10 + number:\n"
+            "- 11 = 10 + 1 → **十 一** (*Juu-ichi*)\n"
+            "- 12 = 10 + 2 → **十 二** (*Juu-ni*)\n"
+            "- 15 = 10 + 5 → **十 五** (*Juu-go*)\n"
+            "- 20 = 2 × 10 → **二 十** (*Ni-juu*)\n"
+            "- 30 = 3 × 10 → **三 十** (*San-juu*)\n\n"
+            "👉 **Speaking Drill:** Count out loud from 1 to 5: *'Ichi, Ni, San, Yon, Go!'*\n\n"
+            "Ready for Lesson 4 (Daily Survival Words & 'Please')?"
+        ),
+        "suggested_replies": [
+            "Start Lesson 4: Daily Survival Words & Please",
+            "How do I say 50 or 100 in Japanese?",
+            "Practice counting 1 to 10 again."
+        ]
+    },
+    4: {
+        "title": "Lesson 4: Daily Survival Words & Asking 'Please' (Kudasai)",
+        "description": "Essential everyday words and ordering politely",
+        "content": (
+            "🍵 **Japanese Basics — Lesson 4: Daily Survival Words & Asking 'Please'**\n\n"
+            "With just a few survival words and one golden phrase, you can navigate any Japanese restaurant, cafe, or store!\n\n"
+            "**Key Survival Vocabulary:**\n"
+            "• **はい** (*Hai*) — Yes / Understood\n"
+            "• **いいえ** (*Iie*) — No / Not at all\n"
+            "• **水** (みず / *Mizu*) — Water (Polite: お水 *O-mizu*)\n"
+            "• **お茶** (おちゃ / *O-cha*) — Green tea\n"
+            "• **ご飯** (ごはん / *Gohan*) — Meal / Rice / Food\n"
+            "• **これ** (*Kore*) — This (near you)\n"
+            "• **それ** (*Sore*) — That (near the listener)\n\n"
+            "✨ **The Magic Request Formula:**\n"
+            "**[Item] + をください ([Item] o kudasai) = 'Please give me [Item]'**\n\n"
+            "Examples:\n"
+            "1. **お水をください。** (*O-mizu o kudasai.*) — Please give me water.\n"
+            "2. **お茶をください。** (*O-cha o kudasai.*) — Please give me green tea.\n"
+            "3. **これをください。** (*Kore o kudasai.*) — Please give me this (Point at menu/item!).\n\n"
+            "👉 **Speaking Drill:** Imagine you are in Tokyo. Say out loud:\n"
+            "✨ *'Kore o kudasai'* (Please give me this!).\n\n"
+            "Ready for Lesson 5 (Essential Questions with 'ka')?"
+        ),
+        "suggested_replies": [
+            "Start Lesson 5: Essential Questions with 'ka'",
+            "How to say 'Check please' in Japanese?",
+            "How to say 'Is this delicious?' in Japanese?"
+        ]
+    },
+    5: {
+        "title": "Lesson 5: Essential Questions & The Magic Particle 'か' (ka)",
+        "description": "Turn any sentence into a question and ask where things are",
+        "content": (
+            "❓ **Japanese Basics — Lesson 5: Essential Questions & The Magic Particle 'か' (ka)**\n\n"
+            "In English, making a question requires changing word order (*'It is'* → *'Is it?'*).\n"
+            "In Japanese, it is much easier: **just add 'か' (ka) at the end of any statement!**\n\n"
+            "**Top 5 Essential Questions for Beginners:**\n"
+            "1. **これは何ですか？** (*Kore wa nan desu ka?*)\n"
+            "   → 'What is this?' *(Point at anything!)*\n"
+            "2. **トイレはどこですか？** (*Toire wa doko desu ka?*)\n"
+            "   → 'Where is the restroom?' *(Lifesaver when traveling!)*\n"
+            "3. **いくらですか？** (*Ikura desu ka?*)\n"
+            "   → 'How much is it?' *(Essential for shopping)*\n"
+            "4. **大丈夫ですか？** (*Daijoubu desu ka?*)\n"
+            "   → 'Are you okay?' / 'Is everything alright?'\n"
+            "5. **日本語を話せますか？** (*Nihongo o hanasemasu ka?*)\n"
+            "   → 'Can you speak Japanese?'\n\n"
+            "💡 **Bonus Answer:** If someone asks *'Daijoubu desu ka?'*, you can simply smile and reply: **'Hai, daijoubu desu!'** (Yes, I'm okay!).\n\n"
+            "👉 **Speaking Drill:** Ask me: *'Toire wa doko desu ka?'* or *'Kore wa nan desu ka?'*\n\n"
+            "Ready for Lesson 6 (Japanese Sentence Structure & Word Order)?"
+        ),
+        "suggested_replies": [
+            "Start Lesson 6: Sentence Order & Structure",
+            "How to ask 'Where is the train station?'",
+            "Practice asking 'How much is this?'"
+        ]
+    },
+    6: {
+        "title": "Lesson 6: Japanese Sentence Structure (Subject + Object + Verb)",
+        "description": "Understand how Japanese sentences are built like LEGO blocks",
+        "content": (
+            "🧩 **Japanese Basics — Lesson 6: Sentence Structure (SOV Order)**\n\n"
+            "Congratulations on reaching Lesson 6! Now you understand how full Japanese sentences work.\n\n"
+            "**The Golden Rule of Japanese Grammar:**\n"
+            "• In English: **Subject + Verb + Object** (*I drink water*)\n"
+            "• In Japanese: **Subject + Object + Verb** (*I water drink*) — **Verb is ALWAYS at the end!**\n\n"
+            "**The 2 Essential Connectors (Particles):**\n"
+            "1. **は** (*wa*) = Marks the Subject/Topic (\"As for...\")\n"
+            "2. **を** (*o*) = Marks the Object (the thing being acted on)\n\n"
+            "💬 **Look how clean and modular it is:**\n"
+            "1. **私は水を飲みます。**\n"
+            "   *Watashi wa mizu o nomimasu.*\n"
+            "   → I (Watashi wa) + water (mizu o) + drink (nomimasu).\n\n"
+            "2. **私はご飯を食べます。**\n"
+            "   *Watashi wa gohan o tabemasu.*\n"
+            "   → I + meal + eat.\n\n"
+            "3. **私は日本語を勉強します。**\n"
+            "   *Watashi wa Nihongo o benkyou shimasu.*\n"
+            "   → I + Japanese + study.\n\n"
+            "🎉 **You now know the core foundation of the Japanese language!**\n"
+            "From here, you can speak or type any word or phrase, and I will translate it, teach pronunciation, and practice daily conversations with you!\n\n"
+            "👉 **Final Drill:** Say: *'Watashi wa Nihongo o benkyou shimasu'* (I study Japanese!)."
+        ),
+        "suggested_replies": [
+            "How to say 'Delicious' in Japanese?",
+            "How to say 'Friend' in Japanese?",
+            "Review Lesson 1: Essential Greetings"
+        ]
+    }
+}
+
 class IntelligentTutorEngine:
     """
     Intelligent built-in conversational tutor engine.
-    Supports English Speaking Coaching AND Hindi Tutoring with word translations,
-    pronunciation guides, gender/grammar notes, and daily spoken practice.
+    Supports English Speaking Coaching, Hindi Tutoring, and Japanese Tutoring with word translations,
+    pronunciation guides, grammar notes, and daily spoken practice.
     """
 
     def __init__(self):
@@ -488,6 +905,150 @@ class IntelligentTutorEngine:
         lower_text = text.lower()
         pref_lang = preferences.get("preferred_language", "en_te")
         learning_target = preferences.get("learning_target", "english")
+
+        # Check if user is in Japanese Tutor mode OR explicitly asking for Japanese translation / basics
+        is_japanese_mode = (learning_target == "japanese") or any(w in lower_text for w in [
+            "in japanese", "to japanese", "into japanese", "translate in japanese", "translate to japanese",
+            "japanese meaning", "japanese tutor", "learn japanese", "how to say in japanese",
+            "nihongo", "in nihongo", "japanese basics"
+        ])
+
+        # --- JAPANESE TUTOR MODE HANDLER ---
+        if is_japanese_mode:
+            # Check if user wants to learn from basics or asks for a specific lesson
+            basics_triggers = [
+                "basic", "basics", "from basics", "learn from basics", "teach me from basics",
+                "learn me from basics", "start from basics", "learn japanese from basics",
+                "teach japanese from basics", "beginner", "start from beginning", "first lesson",
+                "start learning from basics", "alphabet", "hiragana", "katakana"
+            ]
+            is_asking_basics = any(trig in lower_text for trig in basics_triggers)
+
+            lesson_num = None
+            if "lesson 1" in lower_text or "first lesson" in lower_text:
+                lesson_num = 1
+            elif "lesson 2" in lower_text or "second lesson" in lower_text or "introduce myself" in lower_text or "self introduction" in lower_text:
+                lesson_num = 2
+            elif "lesson 3" in lower_text or "third lesson" in lower_text or "numbers" in lower_text or "counting" in lower_text:
+                lesson_num = 3
+            elif "lesson 4" in lower_text or "fourth lesson" in lower_text or "kudasai" in lower_text or "survival words" in lower_text or "please give me" in lower_text:
+                lesson_num = 4
+            elif "lesson 5" in lower_text or "fifth lesson" in lower_text or "questions" in lower_text or "kore wa nan" in lower_text:
+                lesson_num = 5
+            elif "lesson 6" in lower_text or "sixth lesson" in lower_text or "sentence structure" in lower_text or "sov" in lower_text or "sentence order" in lower_text:
+                lesson_num = 6
+            elif is_asking_basics:
+                lesson_num = 1
+
+            if lesson_num and lesson_num in JAPANESE_BASICS_LESSONS:
+                lesson = JAPANESE_BASICS_LESSONS[lesson_num]
+                intro_prefix = ""
+                if is_asking_basics and lesson_num == 1:
+                    intro_prefix = (
+                        f"🌸 **Welcome to Japanese from Basics! (日本語の基礎)**\n"
+                        f"I'm {self.tutor_name}, your AI Japanese Sensei. I will guide you step-by-step from zero!\n\n"
+                        f"**Here is your Japanese Beginner Roadmap:**\n"
+                        f"• **Lesson 1:** How Japanese Works & Essential Greetings 🔰\n"
+                        f"• **Lesson 2:** Self-Introduction (Hajimemashite)\n"
+                        f"• **Lesson 3:** Numbers 1 to 10 & Counting (Sūji)\n"
+                        f"• **Lesson 4:** Daily Survival Words & Asking 'Please' (Kudasai)\n"
+                        f"• **Lesson 5:** Essential Questions with 'ka'\n"
+                        f"• **Lesson 6:** Japanese Sentence Structure (SOV Order)\n\n"
+                        f"---\n\n"
+                    )
+
+                return {
+                    "reply": intro_prefix + lesson["content"],
+                    "correction": None,
+                    "suggested_replies": lesson["suggested_replies"],
+                    "intent": "japanese_basics_lesson"
+                }
+
+            cleaned_target = re.sub(
+                r"\b(how to say|what is|meaning of|translate|in japanese|to japanese|into japanese|japanese meaning|in nihongo|nihongo|please|tell me|can you)\b",
+                "",
+                lower_text
+            ).strip().strip("?'\".,")
+
+            # Check greetings in Japanese mode
+            if lower_text in ["hi", "hello", "hey", "konnichiwa", "ohayou", "konbanwa", "hajimemashite", "good morning", "good evening"]:
+                return {
+                    "reply": (
+                        f"こんにちは！ (Konnichiwa!) 私は {self.tutor_name} です。 FluentUpの AI 日本語チューター (Japanese Tutor) です！\n\n"
+                        "Speak or type any word or sentence in English — I will translate it into Japanese (Kanji/Kana + Romaji), "
+                        "teach you pronunciation, and guide your daily conversational speaking!\n\n"
+                        "💡 *Tip: If you're a beginner, tap **'Start Lesson 1: Japanese Basics'** to learn step-by-step from zero!*\n\n"
+                        "👉 What word or sentence would you like to translate into Japanese today?"
+                    ),
+                    "correction": None,
+                    "suggested_replies": [
+                        "Start Lesson 1: Japanese Basics",
+                        "How to say 'Water' in Japanese?",
+                        "How to say 'Thank you' in Japanese?"
+                    ],
+                    "intent": "japanese_tutor_greeting"
+                }
+
+            # Check matching word in our comprehensive Japanese dictionary
+            matched_entry = None
+            matched_word = None
+            if cleaned_target in JAPANESE_TUTOR_DICTIONARY:
+                matched_entry = JAPANESE_TUTOR_DICTIONARY[cleaned_target]
+                matched_word = cleaned_target
+            else:
+                for k, v in JAPANESE_TUTOR_DICTIONARY.items():
+                    if k in lower_text:
+                        matched_entry = v
+                        matched_word = k
+                        break
+
+            if matched_entry and matched_word:
+                kanji = matched_entry["kanji"]
+                kana = matched_entry["kana"]
+                rom = matched_entry["rom"]
+                tip = matched_entry["tip"]
+                ex1 = matched_entry["ex1"]
+                ex2 = matched_entry["ex2"]
+                practice = matched_entry["practice"]
+
+                reply = (
+                    f"**{matched_word.title()}** in Japanese is **{kanji} ({kana} / {rom})**!\n\n"
+                    f"🇯🇵 **Japanese Translation:** {kanji} *({kana} / {rom})*\n"
+                    f"🗣️ **Nuance & Grammar:** {tip}\n\n"
+                    f"💬 **Daily Spoken Sentences:**\n"
+                    f"1. {ex1[0]} *({ex1[1]})* — {ex1[2]}\n"
+                    f"2. {ex2[0]} *({ex2[1]})* — {ex2[2]}\n\n"
+                    f"👉 **Try saying it out loud:** *'{practice}'*!\n\n"
+                    f"Would you like to learn another Japanese word or sentence?"
+                )
+                return {
+                    "reply": reply,
+                    "correction": None,
+                    "suggested_replies": [
+                        "Teach me words for food and tea in Japanese.",
+                        "How to say 'Where are you going?' in Japanese.",
+                        "How to say 'Thank you' in Japanese?"
+                    ],
+                    "intent": "japanese_word_lesson"
+                }
+
+            # If not in dictionary, provide a rich, encouraging Japanese tutoring response
+            return {
+                "reply": (
+                    f"In Japanese, to express **'{text}'**:\n\n"
+                    f"🇯🇵 **Spoken Tip:** In Japanese sentences, the verb always comes at the end (Subject + Object + Verb).\n\n"
+                    f"For example, to politely request something, say: **'{text} をください' ({text} o kudasai - Please give me {text})**.\n"
+                    f"To ask politely, say: **'これは {text} ですか？' (Kore wa {text} desu ka?)**.\n\n"
+                    f"👉 Repeat this once: *'{text} o kudasai'*. What other word would you like to translate?"
+                ),
+                "correction": None,
+                "suggested_replies": [
+                    "How to say 'Water' in Japanese?",
+                    "How to say 'Food' in Japanese?",
+                    "How to say 'Thank you' in Japanese?"
+                ],
+                "intent": "japanese_tutoring_general"
+            }
 
         # Check if user is in Hindi Tutor mode OR explicitly asking for Hindi translation
         is_hindi_mode = (learning_target == "hindi") or any(w in lower_text for w in [

@@ -58,7 +58,7 @@ export interface UserSettings {
   female_voice_name: string;
   auto_speak: number;
   tutor_name: string;
-  learning_target?: 'english' | 'hindi';
+  learning_target?: 'english' | 'hindi' | 'japanese';
 }
 
 export interface LearningStats {
@@ -78,6 +78,6 @@ export interface AuthUser {
   email: string;
   english_level: 'beginner' | 'intermediate' | 'advanced';
   preferred_language: 'en_te' | 'en_hi' | 'en_only';
-  learning_target?: 'english' | 'hindi';
+  learning_target?: 'english' | 'hindi' | 'japanese';
   avatar?: string;
 }

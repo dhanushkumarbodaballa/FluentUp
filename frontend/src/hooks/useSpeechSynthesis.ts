@@ -60,9 +60,18 @@ export function useSpeechSynthesis() {
 
       const utterance = new SpeechSynthesisUtterance(cleaned);
       const hasHindi = /[\u0900-\u097F]/.test(cleaned);
+      const hasJapanese = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/.test(cleaned);
 
       let selectedVoice = femaleVoice;
-      if (hasHindi) {
+      if (hasJapanese) {
+        const japaneseVoice =
+          voices.find((v) => v.lang.startsWith('ja') || v.name.toLowerCase().includes('japan') || v.name.includes('日本語')) ||
+          femaleVoice;
+        if (japaneseVoice) {
+          selectedVoice = japaneseVoice;
+          utterance.lang = 'ja-JP';
+        }
+      } else if (hasHindi) {
         const hindiVoice =
           voices.find((v) => v.lang.startsWith('hi') || v.name.toLowerCase().includes('hindi')) ||
           voices.find((v) => v.lang.includes('IN')) ||

@@ -68,7 +68,7 @@ export const App: React.FC = () => {
 
   // Settings & stats state
   const [settings, setSettings] = useState<UserSettings | null>(null);
-  const [learningTarget, setLearningTarget] = useState<'english' | 'hindi'>('english');
+  const [learningTarget, setLearningTarget] = useState<'english' | 'hindi' | 'japanese'>('english');
   const [stats, setStats] = useState<LearningStats | null>(null);
   const [vocabulary, setVocabulary] = useState<any[]>([]);
   const [savedCorrections, setSavedCorrections] = useState<any[]>([]);
@@ -351,8 +351,16 @@ export const App: React.FC = () => {
     updateSettings({ preferred_language: nextMode }).catch(console.error);
   };
 
-  const handleToggleLearningTarget = async (target?: 'english' | 'hindi') => {
-    const nextTarget = target || (learningTarget === 'english' ? 'hindi' : 'english');
+  const handleToggleLearningTarget = async (target?: 'english' | 'hindi' | 'japanese') => {
+    let nextTarget: 'english' | 'hindi' | 'japanese';
+    if (target) {
+      nextTarget = target;
+    } else {
+      if (learningTarget === 'english') nextTarget = 'hindi';
+      else if (learningTarget === 'hindi') nextTarget = 'japanese';
+      else nextTarget = 'english';
+    }
+
     setLearningTarget(nextTarget);
     if (settings) {
       setSettings({ ...settings, learning_target: nextTarget });
@@ -438,7 +446,9 @@ export const App: React.FC = () => {
             <div className="flex items-center gap-2.5">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-white shadow-xs ${
-                  learningTarget === 'hindi'
+                  learningTarget === 'japanese'
+                    ? 'bg-gradient-to-tr from-rose-500 via-red-500 to-pink-500 shadow-rose-500/30'
+                    : learningTarget === 'hindi'
                     ? 'bg-gradient-to-tr from-amber-500 via-orange-500 to-rose-500'
                     : 'bg-gradient-to-tr from-brand-600 to-indigo-500'
                 }`}
@@ -450,17 +460,27 @@ export const App: React.FC = () => {
                   <span className="text-xs font-bold text-slate-900 dark:text-white">Maya</span>
                   <span
                     className={`w-1.5 h-1.5 rounded-full ${
-                      learningTarget === 'hindi' ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'
+                      learningTarget === 'japanese'
+                        ? 'bg-rose-500 animate-pulse'
+                        : learningTarget === 'hindi'
+                        ? 'bg-amber-500 animate-pulse'
+                        : 'bg-emerald-500'
                     }`}
                   />
                   <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                    {learningTarget === 'hindi' ? 'AI Hindi Tutor' : 'AI English Tutor'}
+                    {learningTarget === 'japanese'
+                      ? 'AI Japanese Tutor'
+                      : learningTarget === 'hindi'
+                      ? 'AI Hindi Tutor'
+                      : 'AI English Tutor'}
                   </span>
                 </div>
                 <div className="text-[10px] text-brand-600 dark:text-brand-400 font-medium flex items-center gap-1">
                   <Languages className="w-2.5 h-2.5" />
                   <span>
-                    {learningTarget === 'hindi'
+                    {learningTarget === 'japanese'
+                      ? 'Japanese Tutor (日本語を学ぶ)'
+                      : learningTarget === 'hindi'
                       ? 'Hindi Tutor (हिंदी सीखें)'
                       : settings?.preferred_language === 'en_te'
                       ? 'Telugu + English'
@@ -472,8 +492,8 @@ export const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Quick Tutor Mode Switcher in Header */}
-            <div className="hidden sm:flex items-center p-0.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs shadow-2xs">
+            {/* Quick Tutor Mode Switcher in Header (English / Hindi / Japanese) */}
+            <div className="hidden sm:flex items-center p-0.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs shadow-2xs gap-0.5">
               <button
                 onClick={() => handleToggleLearningTarget('english')}
                 className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
@@ -494,7 +514,28 @@ export const App: React.FC = () => {
               >
                 <span>🇮🇳 Hindi</span>
               </button>
+              <button
+                onClick={() => handleToggleLearningTarget('japanese')}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                  learningTarget === 'japanese'
+                    ? 'bg-white dark:bg-slate-900 text-rose-600 dark:text-rose-400 shadow-2xs'
+                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                }`}
+              >
+                <span>🇯🇵 Japanese</span>
+              </button>
             </div>
+
+            {/* Quick Basics button when in Japanese mode */}
+            {learningTarget === 'japanese' && (
+              <button
+                onClick={() => handleSendMessage("Teach me Japanese from the basics (Lesson 1)")}
+                title="Start Lesson 1: Japanese Basics"
+                className="hidden lg:flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors shadow-2xs"
+              >
+                <span>🌱 Learn from Basics</span>
+              </button>
+            )}
           </div>
 
           {/* Quick Actions & Auth */}

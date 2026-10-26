@@ -358,6 +358,34 @@ def tool_translate(data: ToolTranslateRequest):
         "drink": ("पीना (Peena)", "Verb. Example: पानी पियो (Drink water).")
     }
 
+    # English -> Japanese translations for common words & phrases
+    en_to_ja = {
+        "water": ("水 (みず / Mizu)", "Polite: お水 (O-mizu). Example: お水をください (O-mizu o kudasai - Water, please)."),
+        "food": ("ご飯 / 食べ物 (Gohan / Tabemono)", "Gohan means rice or meal. Example: ご飯を食べます (Gohan o tabemasu)."),
+        "tea": ("お茶 (おちゃ / O-cha)", "Green tea / tea. Example: お茶をどうぞ (O-cha o douzo - Please have some tea)."),
+        "friend": ("友達 (ともだち / Tomodachi)", "Example: 彼は私の友達です (Kare wa watashi no tomodachi desu)."),
+        "hello": ("こんにちは (Konnichiwa)", "Universal polite daytime greeting in Japan."),
+        "thank you": ("ありがとうございます (Arigatou gozaimasu)", "Polite gratitude. Casual with friends: 'Arigatou'."),
+        "good morning": ("おはようございます (Ohayou gozaimasu)", "Morning greeting. Casual: 'Ohayou'."),
+        "good night": ("おやすみなさい (Oyasuminasai)", "Evening/bedtime polite farewell."),
+        "how are you": ("お元気ですか？ (O-genki desu ka?)", "Polite greeting inquiry. Reply: 'Hai, genki desu!'."),
+        "where are you going": ("どこへ行きますか？ (Doko e ikimasu ka?)", "Polite question asking destination."),
+        "what is your name": ("お名前は何ですか？ (O-namae wa nan desu ka?)", "Polite way to ask someone's name."),
+        "my name is": ("私の名前は ... です (Watashi no namae wa ... desu)", "Standard Japanese self-introduction."),
+        "delicious": ("美味しい (おいしい / Oishii)", "Useful in any restaurant! Example: とても美味しいです (Totemo oishii desu)."),
+        "help": ("助けて / 手伝って (Tasukete / Tetsudatte)", "Tasukete is emergency help; Tetsudatte is helping with a task."),
+        "book": ("本 (ほん / Hon)", "Example: 本を読みます (Hon o yomimasu - I read a book)."),
+        "house": ("家 (いえ / Ie)", "Example: 私の家 (Watashi no ie - My house)."),
+        "home": ("家 (いえ / Ie)", "Example: 家に帰ります (Ie ni kaerimasu - I go home)."),
+        "money": ("お金 (おかね / O-kane)", "Example: いくらですか？ (Ikura desu ka? - How much is it?)."),
+        "time": ("時間 (じかん / Jikan)", "Example: 今何時ですか？ (Ima nan-ji desu ka? - What time is it now?)."),
+        "work": ("仕事 (しごと / Shigoto)", "Example: 仕事に行きます (Shigoto ni ikimasu - I go to work)."),
+        "come": ("来る / 来ます (Kuru / Kimasu)", "Polite request: 来てください (Kite kudasai - Please come)."),
+        "go": ("行く / 行きます (Iku / Ikimasu)", "Example: 学校へ行きます (Gakkou e ikimasu - I go to school)."),
+        "eat": ("食べる / 食べます (Taberu / Tabemasu)", "Example: ご飯を食べます (Gohan o tabemasu - I eat a meal)."),
+        "drink": ("飲む / 飲みます (Nomu / Nomimasu)", "Example: 水を飲みます (Mizu o nomimasu - I drink water).")
+    }
+
     phrases = {
         # Telugu phrases
         "nenu repu vasthanu": ("I will come tomorrow.", "Future simple action."),
@@ -377,6 +405,14 @@ def tool_translate(data: ToolTranslateRequest):
         "mujhe english seekhni hai": ("I want to learn English.", "Expressing learning aspiration.")
     }
 
+    if target in ["ja", "japanese", "jp"] and cleaned in en_to_ja:
+        match = en_to_ja[cleaned]
+        return {
+            "original": data.text,
+            "translated": match[0],
+            "note": match[1]
+        }
+
     if target == "hi" and cleaned in en_to_hi:
         match = en_to_hi[cleaned]
         return {
@@ -391,6 +427,13 @@ def tool_translate(data: ToolTranslateRequest):
             "original": data.text,
             "translated": match[0],
             "note": match[1]
+        }
+
+    if target in ["ja", "japanese", "jp"]:
+        return {
+            "original": data.text,
+            "translated": f"In Japanese, '{data.text.capitalize()}' is translated with polite Kanji/Kana and Romaji.",
+            "note": "Ask Maya directly in chat to get the exact pronunciation and daily Japanese sentence examples!"
         }
 
     if target == "hi":
