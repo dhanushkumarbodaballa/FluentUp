@@ -220,6 +220,15 @@ export async function deleteVocabulary(id: string): Promise<void> {
   if (!res.ok) throw new Error('Failed to delete vocabulary');
 }
 
+export async function toggleMasterVocabulary(id: string): Promise<{ id: string; mastered: number }> {
+  const res = await fetch(`${BASE_URL}/vocabulary/${id}/master`, {
+    method: 'PATCH',
+    headers: getHeaders(false),
+  });
+  if (!res.ok) throw new Error('Failed to toggle vocabulary master status');
+  return res.json();
+}
+
 // --- Saved Corrections ---
 export async function fetchSavedCorrections(): Promise<SavedCorrection[]> {
   const res = await fetch(`${BASE_URL}/corrections`, {

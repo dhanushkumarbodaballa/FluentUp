@@ -17,7 +17,8 @@ import {
   Flame,
   User,
   LogIn,
-  LogOut
+  LogOut,
+  Theater
 } from 'lucide-react';
 import { Conversation, LearningStats, UserSettings, AuthUser } from '../types';
 
@@ -31,6 +32,7 @@ interface SidebarProps {
   onOpenVocabulary: () => void;
   onOpenCorrections: () => void;
   onOpenProgress: () => void;
+  onOpenRoleplay: () => void;
   onOpenSettings: () => void;
   onOpenTools: () => void;
   stats: LearningStats | null;
@@ -54,6 +56,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenVocabulary,
   onOpenCorrections,
   onOpenProgress,
+  onOpenRoleplay,
   onOpenSettings,
   onOpenTools,
   stats,
@@ -213,6 +216,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {stats.saved_corrections_count}
               </span>
             )}
+          </button>
+
+          <button
+            onClick={onOpenRoleplay}
+            className="w-full flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-purple-700 dark:text-purple-300 bg-purple-50/70 dark:bg-purple-950/30 hover:bg-purple-100 dark:hover:bg-purple-900/40 rounded-lg transition-colors border border-purple-200/50 dark:border-purple-800/40"
+          >
+            <div className="flex items-center gap-2">
+              <Theater className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+              <span>Roleplay Rooms</span>
+            </div>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 bg-white dark:bg-slate-900 px-1.5 py-0.2 rounded-md shadow-2xs">
+              New
+            </span>
           </button>
 
           <button

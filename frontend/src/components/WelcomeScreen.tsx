@@ -11,12 +11,14 @@ import {
   Coffee,
   Compass,
   GraduationCap,
-  ChevronRight
+  ChevronRight,
+  Theater
 } from 'lucide-react';
 
 interface WelcomeScreenProps {
   onSelectPrompt: (prompt: string) => void;
   onStartLiveVoice: () => void;
+  onOpenRoleplay?: () => void;
   tutorName?: string;
   userName?: string;
   onOpenAuth?: () => void;
@@ -27,6 +29,7 @@ interface WelcomeScreenProps {
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   onSelectPrompt,
   onStartLiveVoice,
+  onOpenRoleplay,
   tutorName = "Maya",
   userName,
   onOpenAuth,
@@ -240,23 +243,47 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         </button>
       )}
 
-      {/* Live Voice Room CTA Banner */}
-      <div className="w-full mb-5 p-3.5 rounded-2xl bg-gradient-to-r from-brand-500/10 via-purple-500/10 to-indigo-500/10 border border-brand-200 dark:border-brand-900/60 flex items-center justify-between gap-3 text-left">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center shadow-md shadow-brand-600/30">
-            <Mic className="w-5 h-5" />
+      {/* Interactive Modes Banner Grid */}
+      <div className="w-full mb-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+        {/* Live Voice Banner */}
+        <div className="p-3.5 rounded-2xl bg-gradient-to-br from-brand-500/10 via-purple-500/10 to-indigo-500/10 border border-brand-200/80 dark:border-brand-900/60 flex items-center justify-between gap-2.5">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center shadow-md shadow-brand-600/30 shrink-0">
+              <Mic className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-slate-900 dark:text-white">Live Voice Call</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400">Natural audio conversation</div>
+            </div>
           </div>
-          <div>
-            <div className="text-xs font-semibold text-slate-900 dark:text-white">Live Voice Conversation</div>
-            <div className="text-[11px] text-slate-500 dark:text-slate-400">Speak fluently with real-time natural audio turn-taking</div>
-          </div>
+          <button
+            onClick={onStartLiveVoice}
+            className="px-3 py-1.5 text-xs font-semibold bg-brand-600 hover:bg-brand-700 text-white rounded-xl shadow-xs transition-all whitespace-nowrap cursor-pointer"
+          >
+            Start Voice
+          </button>
         </div>
-        <button
-          onClick={onStartLiveVoice}
-          className="px-3.5 py-1.5 text-xs font-medium bg-brand-600 hover:bg-brand-700 text-white rounded-xl shadow-sm transition-all whitespace-nowrap"
-        >
-          Start Voice
-        </button>
+
+        {/* Real-World Roleplay Banner */}
+        {onOpenRoleplay && (
+          <div className="p-3.5 rounded-2xl bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-rose-500/10 border border-purple-200/80 dark:border-purple-900/60 flex items-center justify-between gap-2.5">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-pink-600 text-white flex items-center justify-center shadow-md shadow-purple-600/30 shrink-0">
+                <Theater className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-xs font-bold text-slate-900 dark:text-white">Roleplay Rooms</div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400">Cafe, Job, Hotel & Travel</div>
+              </div>
+            </div>
+            <button
+              onClick={onOpenRoleplay}
+              className="px-3 py-1.5 text-xs font-semibold bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl shadow-xs transition-all whitespace-nowrap cursor-pointer"
+            >
+              Explore Rooms
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Japanese Basics Roadmap Card */}

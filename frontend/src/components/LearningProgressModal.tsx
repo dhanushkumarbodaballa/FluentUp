@@ -1,5 +1,17 @@
 import React from 'react';
-import { TrendingUp, Flame, MessageSquare, Mic, BookOpen, CheckCircle2, Award, X, Sparkles } from 'lucide-react';
+import {
+  TrendingUp,
+  Flame,
+  MessageSquare,
+  Mic,
+  BookOpen,
+  CheckCircle2,
+  Award,
+  X,
+  Sparkles,
+  Zap,
+  Target
+} from 'lucide-react';
 import { LearningStats, UserSettings } from '../types';
 
 interface LearningProgressModalProps {
@@ -19,6 +31,11 @@ export const LearningProgressModal: React.FC<LearningProgressModalProps> = ({
 
   const minutesSpoken = stats ? Math.round(stats.minutes_spoken * 10) / 10 : 0;
   const level = settings?.english_level || 'beginner';
+  const xp = stats?.xp || 120;
+  const currentLevel = stats?.level || 1;
+  const levelTitle = stats?.level_title || '🌱 Novice Explorer';
+  const nextLevelXp = stats?.next_level_xp || 250;
+  const progressPercent = stats?.progress_percent || 48;
 
   // Level assessment guidance
   const levelDescriptions = {
@@ -42,8 +59,8 @@ export const LearningProgressModal: React.FC<LearningProgressModalProps> = ({
   const currentLevelInfo = levelDescriptions[level as keyof typeof levelDescriptions] || levelDescriptions.beginner;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4 animate-fadeIn">
-      <div className="w-full max-w-lg max-h-[85vh] rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-fadeIn">
+      <div className="w-full max-w-lg max-h-[88vh] rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-2.5">
@@ -51,8 +68,8 @@ export const LearningProgressModal: React.FC<LearningProgressModalProps> = ({
               <TrendingUp className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-900 dark:text-white">Learning Progress</h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Your spoken English journey</p>
+              <h2 className="text-base font-bold text-slate-900 dark:text-white">Learning Hub & Stats</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Your gamified spoken fluency journey</p>
             </div>
           </div>
 
@@ -63,18 +80,55 @@ export const LearningProgressModal: React.FC<LearningProgressModalProps> = ({
 
         {/* Content */}
         <div className="p-5 overflow-y-auto space-y-4">
+          {/* Gamified XP & Level Progress Card */}
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 text-white shadow-lg shadow-brand-500/25 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-amber-300 font-bold">
+                  <Award className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="text-xs text-white/80 font-medium">Player Rank</div>
+                  <div className="text-base font-extrabold">{levelTitle}</div>
+                </div>
+              </div>
+
+              <div className="text-right">
+                <div className="text-xs text-white/80 font-medium">Total XP</div>
+                <div className="text-lg font-black text-amber-300 flex items-center gap-1 justify-end">
+                  <Zap className="w-4 h-4 fill-current" />
+                  <span>{xp} XP</span>
+                </div>
+              </div>
+            </div>
+
+            {/* XP Progress Bar */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-[11px] text-white/80 font-semibold">
+                <span>Level {currentLevel}</span>
+                <span>{xp} / {nextLevelXp} XP ({progressPercent}%)</span>
+              </div>
+              <div className="w-full h-2 rounded-full bg-white/20 overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-amber-300 to-emerald-300 rounded-full transition-all duration-500"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Daily Streak Highlight Card */}
           <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/5 border border-amber-200/80 dark:border-amber-900/50 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-white shadow-md shadow-amber-500/30">
-                <Flame className="w-6 h-6 fill-current" />
+                <Flame className="w-6 h-6 fill-current animate-pulse" />
               </div>
               <div>
                 <div className="text-xl font-bold text-slate-900 dark:text-white">
                   {stats?.streak_days || 1} Day Streak
                 </div>
                 <div className="text-xs text-slate-500 dark:text-slate-400">
-                  Consistency is the secret to natural fluency!
+                  Consistency is the secret to natural fluency! Keep it going today.
                 </div>
               </div>
             </div>
@@ -138,9 +192,9 @@ export const LearningProgressModal: React.FC<LearningProgressModalProps> = ({
               {currentLevelInfo.summary}
             </p>
 
-            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-xs text-brand-700 dark:text-brand-400">
-              <strong>Recommended Practice: </strong>
-              {currentLevelInfo.nextStep}
+            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
+              <span className="font-semibold text-brand-600 dark:text-brand-400">Recommended Next Step: </span>
+              <span className="text-slate-600 dark:text-slate-400">{currentLevelInfo.nextStep}</span>
             </div>
           </div>
         </div>

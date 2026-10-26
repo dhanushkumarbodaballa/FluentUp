@@ -9,7 +9,10 @@ import {
   AlertCircle,
   LogIn,
   LogOut,
-  User as UserIcon
+  User as UserIcon,
+  Theater,
+  Flame,
+  Zap
 } from 'lucide-react';
 import { Message, Conversation, UserSettings, LearningStats, AuthUser } from './types';
 import {
@@ -42,6 +45,7 @@ import { SettingsModal } from './components/SettingsModal';
 import { ToolsModal } from './components/ToolsModal';
 import { AuthModal } from './components/AuthModal';
 import { LoginPage } from './components/LoginPage';
+import { RoleplayModal } from './components/RoleplayModal';
 
 export const App: React.FC = () => {
   // Theme state
@@ -78,6 +82,7 @@ export const App: React.FC = () => {
   const [isVocabOpen, setIsVocabOpen] = useState(false);
   const [isCorrectionsOpen, setIsCorrectionsOpen] = useState(false);
   const [isProgressOpen, setIsProgressOpen] = useState(false);
+  const [isRoleplayOpen, setIsRoleplayOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isToolsOpen, setIsToolsOpen] = useState(false);
 
@@ -417,6 +422,7 @@ export const App: React.FC = () => {
         onOpenVocabulary={() => setIsVocabOpen(true)}
         onOpenCorrections={() => setIsCorrectionsOpen(true)}
         onOpenProgress={() => setIsProgressOpen(true)}
+        onOpenRoleplay={() => setIsRoleplayOpen(true)}
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenTools={() => setIsToolsOpen(true)}
         stats={stats}
@@ -539,10 +545,39 @@ export const App: React.FC = () => {
           </div>
 
           {/* Quick Actions & Auth */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
+            {/* Gamified Streak & XP Badge */}
+            {stats && (
+              <button
+                onClick={() => setIsProgressOpen(true)}
+                className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/15 border border-amber-300/40 dark:border-amber-700/40 text-amber-700 dark:text-amber-300 hover:scale-105 active:scale-95 transition-all text-xs font-semibold shadow-2xs cursor-pointer"
+                title="View Level & Progress"
+              >
+                <span className="flex items-center gap-0.5 text-amber-600 dark:text-amber-400">
+                  <Flame className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+                  <span>{stats.streak_days || 0}d</span>
+                </span>
+                <span className="text-slate-300 dark:text-slate-700">•</span>
+                <span className="flex items-center gap-0.5 text-orange-600 dark:text-orange-400">
+                  <Zap className="w-3.5 h-3.5 fill-orange-500 text-orange-500" />
+                  <span>{stats.xp || 0} XP</span>
+                </span>
+              </button>
+            )}
+
+            {/* Roleplay Rooms Button */}
+            <button
+              onClick={() => setIsRoleplayOpen(true)}
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-purple-200 dark:border-purple-800/80 bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40 dark:hover:bg-purple-900/40 text-purple-700 dark:text-purple-300 text-xs font-semibold shadow-2xs transition-all cursor-pointer"
+              title="Practice real-life roleplays"
+            >
+              <Theater className="w-3.5 h-3.5" />
+              <span>Roleplay</span>
+            </button>
+
             <button
               onClick={() => setIsLiveVoiceOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-medium shadow-xs shadow-brand-600/30 transition-all"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-medium shadow-xs shadow-brand-600/30 transition-all cursor-pointer"
             >
               <Headphones className="w-3.5 h-3.5" />
               <span>Live Voice</span>
@@ -583,6 +618,7 @@ export const App: React.FC = () => {
             <WelcomeScreen
               onSelectPrompt={(prompt) => handleSendMessage(prompt)}
               onStartLiveVoice={() => setIsLiveVoiceOpen(true)}
+              onOpenRoleplay={() => setIsRoleplayOpen(true)}
               tutorName={settings?.tutor_name || 'Maya'}
               userName={user?.name}
               onOpenAuth={() => setIsGuestMode(false)}
@@ -681,6 +717,16 @@ export const App: React.FC = () => {
         onClose={() => setIsProgressOpen(false)}
         stats={stats}
         settings={settings}
+      />
+
+      <RoleplayModal
+        isOpen={isRoleplayOpen}
+        onClose={() => setIsRoleplayOpen(false)}
+        learningTarget={learningTarget}
+        onStartScenario={(_title: string, prompt: string) => {
+          setIsRoleplayOpen(false);
+          handleSendMessage(prompt);
+        }}
       />
 
       <SettingsModal

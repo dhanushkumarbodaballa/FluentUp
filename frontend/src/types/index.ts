@@ -70,6 +70,11 @@ export interface LearningStats {
   saved_vocabulary_count: number;
   saved_corrections_count: number;
   total_conversations: number;
+  xp?: number;
+  level?: number;
+  level_title?: string;
+  next_level_xp?: number;
+  progress_percent?: number;
 }
 
 export interface AuthUser {

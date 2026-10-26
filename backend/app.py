@@ -275,6 +275,10 @@ def remove_vocabulary(vocab_id: str):
     db.delete_vocabulary(vocab_id)
     return {"status": "deleted"}
 
+@app.patch("/api/vocabulary/{vocab_id}/master")
+def toggle_master_vocab(vocab_id: str):
+    return db.toggle_master_vocabulary(vocab_id)
+
 # --- Saved Corrections ---
 @app.get("/api/corrections")
 def get_corrections(authorization: Optional[str] = Header(None)):

@@ -523,6 +523,20 @@ def delete_vocabulary(vocab_id: str):
     conn.commit()
     conn.close()
 
+def toggle_master_vocabulary(vocab_id: str) -> Dict[str, Any]:
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT mastered FROM vocabulary WHERE id = ?", (vocab_id,))
+    row = cursor.fetchone()
+    if not row:
+        conn.close()
+        raise ValueError("Vocabulary word not found")
+    new_val = 0 if row["mastered"] else 1
+    cursor.execute("UPDATE vocabulary SET mastered = ? WHERE id = ?", (new_val, vocab_id))
+    conn.commit()
+    conn.close()
+    return {"id": vocab_id, "mastered": new_val}
+
 # --- Saved Corrections operations ---
 def list_saved_corrections(user_id: Optional[str] = None) -> List[Dict[str, Any]]:
     conn = get_connection()
@@ -666,6 +680,31 @@ def get_learning_stats(user_id: Optional[str] = None) -> Dict[str, Any]:
     stats["saved_vocabulary_count"] = vocab_count
     stats["saved_corrections_count"] = corrections_count
     stats["total_conversations"] = conversations_count
+
+    # Gamification: XP & Level system
+    tot_msg = stats.get("total_messages", 0)
+    mins = stats.get("minutes_spoken", 0.0)
+    streak = stats.get("streak_days", 1)
+    xp = (tot_msg * 15) + int(mins * 25) + (vocab_count * 20) + (streak * 50) + (corrections_count * 10)
+    if xp < 50:
+        xp = 50 + (tot_msg * 10)
+    level = 1 + (xp // 250)
+    level_titles = {
+        1: "🌱 Novice Explorer",
+        2: "💬 Active Conversationalist",
+        3: "⚡ Fluent Speaker",
+        4: "🌟 Confident Pro",
+        5: "👑 Language Master"
+    }
+    level_title = level_titles.get(level, f"👑 Language Master (Lvl {level})")
+    next_level_xp = level * 250
+    progress_percent = int(((xp % 250) / 250.0) * 100)
+
+    stats["xp"] = xp
+    stats["level"] = level
+    stats["level_title"] = level_title
+    stats["next_level_xp"] = next_level_xp
+    stats["progress_percent"] = progress_percent
     return stats
 
 def record_spoken_time(minutes: float):
