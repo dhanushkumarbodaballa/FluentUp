@@ -41,6 +41,7 @@ import { LearningProgressModal } from './components/LearningProgressModal';
 import { SettingsModal } from './components/SettingsModal';
 import { ToolsModal } from './components/ToolsModal';
 import { AuthModal } from './components/AuthModal';
+import { LoginPage } from './components/LoginPage';
 
 export const App: React.FC = () => {
   // Theme state
@@ -54,6 +55,8 @@ export const App: React.FC = () => {
   // User Auth State
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isGuestMode, setIsGuestMode] = useState(false);
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
 
   // Core chat states
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -118,18 +121,25 @@ export const App: React.FC = () => {
   }, []);
 
   const initAuthAndData = async () => {
-    // 1. Try to fetch currently logged-in user if token exists
+    setIsAuthChecking(true);
+    let authenticatedUser: AuthUser | null = null;
     try {
       const authRes = await fetchCurrentUser();
       if (authRes?.user) {
+        authenticatedUser = authRes.user;
         setUser(authRes.user);
+      } else {
+        setUser(null);
       }
     } catch {
       setUser(null);
+    } finally {
+      setIsAuthChecking(false);
     }
 
-    // 2. Load conversations, settings, stats
-    loadData();
+    if (authenticatedUser) {
+      loadData();
+    }
   };
 
   const loadData = async () => {
@@ -161,14 +171,15 @@ export const App: React.FC = () => {
 
   const handleLoginSuccess = (authUser: AuthUser) => {
     setUser(authUser);
+    setIsGuestMode(false);
     loadData();
   };
 
   const handleLogout = async () => {
     await logoutUser();
     setUser(null);
+    setIsGuestMode(false); // Redirects straight back to LoginPage!
     handleNewChat();
-    loadData();
   };
 
   const selectConversation = async (convId: string) => {
@@ -326,6 +337,38 @@ export const App: React.FC = () => {
     updateSettings({ preferred_language: nextMode }).catch(console.error);
   };
 
+  // 1. Initial Auth Loading Screen
+  if (isAuthChecking) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/30 animate-pulse">
+            <Sparkles className="w-6 h-6 animate-spin" />
+          </div>
+          <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+            Starting FluentUp AI...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. Default Opening Screen: If user is not authenticated and hasn't chosen Guest Mode -> Show LoginPage!
+  if (!user && !isGuestMode) {
+    return (
+      <LoginPage
+        onLoginSuccess={handleLoginSuccess}
+        onContinueAsGuest={() => {
+          setIsGuestMode(true);
+          loadData();
+        }}
+        isDarkMode={isDarkMode}
+        onToggleDarkMode={() => setIsDarkMode((prev) => !prev)}
+      />
+    );
+  }
+
+  // 3. Authenticated or Guest Tutor Workspace
   return (
     <div className="flex h-screen w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 overflow-hidden font-sans">
       {/* Sidebar Navigation */}
@@ -344,7 +387,7 @@ export const App: React.FC = () => {
         stats={stats}
         settings={settings}
         user={user}
-        onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenAuth={() => setIsGuestMode(false)}
         onLogout={handleLogout}
         isDarkMode={isDarkMode}
         onToggleDarkMode={() => setIsDarkMode((prev) => !prev)}
@@ -416,8 +459,8 @@ export const App: React.FC = () => {
               </div>
             ) : (
               <button
-                onClick={() => setIsAuthOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-brand-200 dark:border-brand-800/80 bg-brand-50/70 hover:bg-brand-100 dark:bg-brand-950/40 dark:hover:bg-brand-900/40 text-brand-700 dark:text-brand-300 text-xs font-semibold shadow-xs transition-all"
+                onClick={() => setIsGuestMode(false)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-brand-200 dark:border-brand-800/80 bg-brand-50/70 hover:bg-brand-100 dark:bg-brand-950/40 dark:hover:bg-brand-900/40 text-brand-700 dark:text-brand-300 text-xs font-semibold shadow-xs transition-all cursor-pointer"
               >
                 <LogIn className="w-3.5 h-3.5" />
                 <span>Log In / Sign Up</span>
@@ -434,7 +477,7 @@ export const App: React.FC = () => {
               onStartLiveVoice={() => setIsLiveVoiceOpen(true)}
               tutorName={settings?.tutor_name || 'Maya'}
               userName={user?.name}
-              onOpenAuth={() => setIsAuthOpen(true)}
+              onOpenAuth={() => setIsGuestMode(false)}
             />
           ) : (
             <div className="max-w-3xl w-full mx-auto flex-1">
