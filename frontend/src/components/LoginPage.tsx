@@ -9,7 +9,6 @@ import {
   Languages,
   CheckCircle2,
   ArrowRight,
-  Zap,
   GraduationCap,
   Headphones,
   BookOpen,
@@ -81,19 +80,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({
       }
     } catch (err: any) {
       setError(err.message || 'Authentication failed. Please check your credentials.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleQuickDemo = async () => {
-    setError(null);
-    setIsLoading(true);
-    try {
-      const res = await loginUser('dhanush@fluentup.ai', 'password123');
-      onLoginSuccess(res.user);
-    } catch (err: any) {
-      setError(err.message || 'Demo login failed');
     } finally {
       setIsLoading(false);
     }
@@ -250,7 +236,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
-                  Sign In (లాగిన్)
+                  Sign In
                 </button>
                 <button
                   type="button"
@@ -261,31 +247,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
-                  Sign Up (కొత్త ఖాతా)
+                  Sign Up
                 </button>
               </div>
-
-              {/* 1-Click Instant Demo Login Banner (on Sign In) */}
-              {tab === 'signin' && (
-                <div className="mb-4">
-                  <button
-                    type="button"
-                    onClick={handleQuickDemo}
-                    disabled={isLoading}
-                    className="w-full py-2.5 px-3.5 rounded-xl border border-dashed border-brand-400/80 dark:border-brand-700 bg-brand-50/70 hover:bg-brand-100/80 dark:bg-brand-950/40 dark:hover:bg-brand-900/40 text-brand-700 dark:text-brand-300 text-xs font-semibold transition-all flex items-center justify-center gap-2 group cursor-pointer shadow-xs"
-                  >
-                    <Zap className="w-4 h-4 text-amber-500 fill-amber-500 group-hover:scale-110 transition-transform" />
-                    <span>⚡ 1-Click Demo Login (Dhanush Kumar)</span>
-                  </button>
-                  <div className="relative flex py-2 items-center">
-                    <div className="flex-grow border-t border-slate-200 dark:border-slate-800" />
-                    <span className="flex-shrink mx-3 text-[10px] text-slate-400 uppercase font-semibold tracking-wider">
-                      Or sign in with email
-                    </span>
-                    <div className="flex-grow border-t border-slate-200 dark:border-slate-800" />
-                  </div>
-                </div>
-              )}
 
               {/* Error Message */}
               {error && (
@@ -310,7 +274,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                         required
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        placeholder="e.g. Dhanush Kumar"
+                        placeholder="e.g. Alex Johnson"
                         className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 dark:text-white placeholder-slate-400"
                       />
                     </div>
@@ -466,7 +430,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                   onClick={onContinueAsGuest}
                   className="text-xs text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 font-medium transition-colors"
                 >
-                  Continue exploring as Guest (ఎలాంటి అకౌంట్ లేకుండా కొనసాగండి) →
+                  Continue exploring as Guest →
                 </button>
               </div>
             </div>

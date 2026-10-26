@@ -10,7 +10,6 @@ import {
   Languages,
   CheckCircle2,
   ArrowRight,
-  Zap,
   GraduationCap
 } from 'lucide-react';
 import { AuthUser } from '../types';
@@ -90,20 +89,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     }
   };
 
-  const handleQuickDemo = async () => {
-    setError(null);
-    setIsLoading(true);
-    try {
-      const res = await loginUser('dhanush@fluentup.ai', 'password123');
-      onLoginSuccess(res.user);
-      onClose();
-    } catch (err: any) {
-      setError(err.message || 'Demo login failed');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md animate-fadeIn">
       <div className="relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden">
@@ -149,7 +134,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              Sign In (లాగిన్)
+              Sign In
             </button>
             <button
               type="button"
@@ -160,7 +145,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              Create Account (ఖాతా తెరవండి)
+              Sign Up
             </button>
           </div>
         </div>
@@ -187,7 +172,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Dhanush Kumar"
+                  placeholder="e.g. Alex Johnson"
                   className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-brand-400 text-slate-900 dark:text-white placeholder-slate-400"
                 />
               </div>
@@ -335,28 +320,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             )}
           </button>
 
-          {/* 1-Click Quick Demo Login Button */}
-          {tab === 'signin' && (
-            <div className="pt-2">
-              <div className="relative flex py-1 items-center">
-                <div className="flex-grow border-t border-slate-200 dark:border-slate-800" />
-                <span className="flex-shrink mx-3 text-[10px] text-slate-400 uppercase tracking-wider">
-                  Quick Access
-                </span>
-                <div className="flex-grow border-t border-slate-200 dark:border-slate-800" />
-              </div>
-
-              <button
-                type="button"
-                onClick={handleQuickDemo}
-                disabled={isLoading}
-                className="w-full mt-2 py-2 px-3 rounded-xl border border-dashed border-brand-300 dark:border-brand-800 hover:border-brand-500 bg-brand-50/40 dark:bg-brand-950/20 text-brand-700 dark:text-brand-300 text-xs font-medium transition-all flex items-center justify-center gap-2 group"
-              >
-                <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500 group-hover:scale-110 transition-transform" />
-                <span>1-Click Demo Login (Dhanush Kumar)</span>
-              </button>
-            </div>
-          )}
 
           {/* Continue as Guest option */}
           <div className="text-center pt-2">
