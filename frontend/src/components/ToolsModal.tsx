@@ -127,7 +127,7 @@ export const ToolsModal: React.FC<ToolsModalProps> = ({
             }`}
           >
             <Languages className="w-3.5 h-3.5" />
-            <span>English ↔ Telugu</span>
+            <span>Translator</span>
           </button>
 
           <button
@@ -203,10 +203,10 @@ export const ToolsModal: React.FC<ToolsModalProps> = ({
                         <strong>Rule: </strong>
                         {grammarResult.correction.explanation_en}
                       </div>
-                      {grammarResult.correction.explanation_te && (
+                      {(grammarResult.correction.explanation_hi || grammarResult.correction.explanation_te) && (
                         <div className="p-2 rounded-xl bg-brand-100/50 dark:bg-brand-950/60 text-[11px] text-brand-900 dark:text-brand-200">
-                          <strong>Telugu Insight: </strong>
-                          {grammarResult.correction.explanation_te}
+                          <strong>{grammarResult.correction.explanation_hi ? 'Hindi Insight: ' : 'Language Insight: '}</strong>
+                          {grammarResult.correction.explanation_hi || grammarResult.correction.explanation_te}
                         </div>
                       )}
                     </div>
@@ -220,13 +220,13 @@ export const ToolsModal: React.FC<ToolsModalProps> = ({
           {activeTab === 'translate' && (
             <div className="space-y-3">
               <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                Enter text in Telugu or English:
+                Enter text in Hindi, Telugu, or English:
               </label>
               <textarea
                 rows={3}
                 value={transInput}
                 onChange={(e) => setTransInput(e.target.value)}
-                placeholder="e.g. Nenu repu vasthanu / I have a lot of work today"
+                placeholder="e.g. Main kal aunga / Nenu repu vasthanu / I have a lot of work today"
                 className="w-full p-3 text-xs rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-brand-500"
               />
               <div className="flex justify-end">

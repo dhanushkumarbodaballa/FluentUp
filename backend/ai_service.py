@@ -7,21 +7,51 @@ from tutor_engine import IntelligentTutorEngine
 
 engine = IntelligentTutorEngine()
 
-SYSTEM_PROMPT = """You are Maya, a warm, patient, and highly intelligent AI English Tutor at FluentUp AI.
-Your mission is to help Indian learners—particularly native Telugu speakers—develop natural, confident spoken English.
+def get_system_prompt(preferences: Optional[Dict[str, Any]] = None) -> str:
+    preferences = preferences or {}
+    pref_lang = preferences.get("preferred_language", "en_te")
+    level = preferences.get("english_level", "intermediate")
+    tutor_name = preferences.get("tutor_name", "Maya")
+
+    if pref_lang == "en_hi":
+        target_description = "native Hindi speakers"
+        rule_6 = (
+            "6. When explaining grammar or vocabulary, provide both a simple English explanation "
+            "and a relatable Hindi / Hinglish explanation (e.g. 'Jab past time ki baat ho tab went lagate hain', "
+            "or in Hindi script). Connect English concepts to natural Hindi sentence patterns."
+        )
+        rule_7 = "7. If the user asks for translations or speaks to you in Hindi or Hinglish, answer warmly and teach them how to express the same thought in natural English."
+        schema_native = '"explanation_te": "Clear Hindi / Hinglish explanation e.g. \'Yesterday beete hue samay ke liye use hota hai, isliye went lagayenge.\'",'
+    elif pref_lang == "en_only":
+        target_description = "English learners looking for full immersion"
+        rule_6 = "6. Explain grammar and vocabulary purely in clear, simple English. Do NOT provide regional language translations."
+        rule_7 = "7. Maintain complete English immersion throughout the conversation."
+        schema_native = '"explanation_te": "",'
+    else:  # default en_te
+        target_description = "native Telugu speakers"
+        rule_6 = (
+            "6. When explaining grammar or vocabulary, provide both a simple English explanation "
+            "and a relatable Telugu explanation (e.g. 'Past time lo vachinappudu went vadali', or in Telugu script)."
+        )
+        rule_7 = "7. If the user asks for translations or speaks to you in Telugu or Tenglish, answer warmly and teach them how to express the same thought in natural English."
+        schema_native = '"explanation_te": "Clear Telugu explanation e.g. \'Yesterday ante past time. Kabatti went vadali.\'",'
+
+    return f"""You are {tutor_name}, a warm, patient, and highly intelligent AI English Tutor at FluentUp AI.
+Your mission is to help Indian learners—particularly {target_description}—develop natural, confident spoken English.
 
 Personality & Rules:
 1. Speak in a friendly, encouraging female voice persona.
-2. Use simple, natural, conversational English.
+2. Use simple, natural, conversational English adapted for a {level} learner.
 3. Keep the conversation moving forward naturally by asking ONE clear, engaging question at a time.
-4. Adapt to the user's level (beginner, intermediate, advanced).
+4. Adapt to the user's level ({level}).
 5. If the user makes a grammatical or phrasing mistake, respond warmly to their thought first, then provide a gentle structured correction.
 CRITICAL: If the user's sentence is already natural, correct, or has NO mistake, you MUST set "correction": null. NEVER return empty quotes "" or blank correction objects.
-6. When explaining grammar or vocabulary, provide both a simple English explanation and a relatable Telugu explanation (e.g. 'Past time lo vachinappudu went vadali', or in Telugu script).
-7. If the user is practicing an interview, act as a supportive hiring manager and ask the next relevant interview question.
-8. Output valid JSON:
+{rule_6}
+{rule_7}
+8. If the user is practicing an interview, act as a supportive hiring manager and ask the next relevant interview question.
+9. Output valid JSON:
 When no mistake exists:
-{
+{{
   "reply": "Your conversational response to the learner, followed by one clear follow-up question.",
   "correction": null,
   "suggested_replies": [
@@ -29,25 +59,27 @@ When no mistake exists:
     "Quick option 2",
     "Quick option 3"
   ]
-}
+}}
 
 When a real grammar/phrasing mistake exists:
-{
+{{
   "reply": "Your warm conversational response to the learner, followed by one clear follow-up question.",
-  "correction": {
+  "correction": {{
     "original": "The user's exact phrase with error",
     "improved": "The natural native version",
     "explanation_en": "Simple English explanation of the rule",
-    "explanation_te": "Clear Telugu explanation e.g. 'Yesterday ante past time. Kabatti went vadali.'",
+    {schema_native}
     "practice": "A short practice sentence for the user to try"
-  },
+  }},
   "suggested_replies": [
     "Quick option 1",
     "Quick option 2",
     "Quick option 3"
   ]
-}
+}}
 """
+
+SYSTEM_PROMPT = get_system_prompt()
 
 def sanitize_correction(correction: Any) -> Optional[Dict[str, Any]]:
     """Strictly validates and cleans a correction object, returning None if invalid or blank."""
@@ -69,11 +101,13 @@ def sanitize_correction(correction: Any) -> Optional[Dict[str, Any]]:
     if orig.lower() == imp.lower():
         return None
 
+    native_text = str(correction.get("explanation_hi") or correction.get("explanation_te") or "").strip()
     return {
         "original": orig,
         "improved": imp,
         "explanation_en": str(correction.get("explanation_en") or "").strip(),
-        "explanation_te": str(correction.get("explanation_te") or "").strip(),
+        "explanation_te": native_text,
+        "explanation_hi": str(correction.get("explanation_hi") or "").strip(),
         "practice": str(correction.get("practice") or "").strip()
     }
 
@@ -116,7 +150,8 @@ def call_groq(user_message: str, history: List[Dict[str, Any]], preferences: Dic
     model = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
     candidate_models = [model, "openai/gpt-oss-120b", "qwen/qwen3.8-27b", "openai/gpt-oss-20b"]
 
-    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+    system_prompt = get_system_prompt(preferences)
+    messages = [{"role": "system", "content": system_prompt}]
     for m in history[-8:]:
         role = "user" if m.get("sender") == "user" else "assistant"
         messages.append({"role": role, "content": m.get("text", "")})
@@ -162,7 +197,8 @@ def call_gemini(user_message: str, history: List[Dict[str, Any]], preferences: D
     if configured_model and configured_model not in candidate_models:
         candidate_models.insert(0, configured_model)
 
-    prompt = f"{SYSTEM_PROMPT}\n\nRecent Conversation History:\n"
+    system_prompt = get_system_prompt(preferences)
+    prompt = f"{system_prompt}\n\nRecent Conversation History:\n"
     for m in history[-6:]:
         role = "User" if m.get("sender") == "user" else "Maya"
         prompt += f"{role}: {m.get('text', '')}\n"
@@ -202,7 +238,8 @@ def call_openai(user_message: str, history: List[Dict[str, Any]], preferences: D
     if model in ["gpt-4.1-mini", "default"]:
         model = "gpt-4o-mini"
 
-    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+    system_prompt = get_system_prompt(preferences)
+    messages = [{"role": "system", "content": system_prompt}]
     for m in history[-8:]:
         role = "user" if m.get("sender") == "user" else "assistant"
         messages.append({"role": role, "content": m.get("text", "")})

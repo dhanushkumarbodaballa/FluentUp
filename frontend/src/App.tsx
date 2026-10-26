@@ -322,7 +322,11 @@ export const App: React.FC = () => {
   };
 
   const handleAskExplainInTelugu = (text: string) => {
-    handleSendMessage(`Can you please explain this in Telugu? "${text}"`);
+    if (settings?.preferred_language === 'en_hi') {
+      handleSendMessage(`Can you please explain this in Hindi? "${text}"`);
+    } else {
+      handleSendMessage(`Can you please explain this in Telugu? "${text}"`);
+    }
   };
 
   const handleAskSimplify = (text: string) => {
@@ -331,7 +335,12 @@ export const App: React.FC = () => {
 
   const handleToggleLanguageMode = async () => {
     if (!settings) return;
-    const nextMode: 'en_te' | 'en_only' = settings.preferred_language === 'en_te' ? 'en_only' : 'en_te';
+    const current = settings.preferred_language;
+    let nextMode: 'en_te' | 'en_hi' | 'en_only';
+    if (current === 'en_te') nextMode = 'en_hi';
+    else if (current === 'en_hi') nextMode = 'en_only';
+    else nextMode = 'en_te';
+
     const updated: UserSettings = { ...settings, preferred_language: nextMode };
     setSettings(updated);
     updateSettings({ preferred_language: nextMode }).catch(console.error);
@@ -423,7 +432,11 @@ export const App: React.FC = () => {
                 <div className="text-[10px] text-brand-600 dark:text-brand-400 font-medium flex items-center gap-1">
                   <Languages className="w-2.5 h-2.5" />
                   <span>
-                    {settings?.preferred_language === 'en_te' ? 'Telugu + English' : 'English Immersion'}
+                    {settings?.preferred_language === 'en_te'
+                      ? 'Telugu + English'
+                      : settings?.preferred_language === 'en_hi'
+                      ? 'Hindi + English'
+                      : 'English Immersion'}
                   </span>
                 </div>
               </div>
@@ -491,6 +504,7 @@ export const App: React.FC = () => {
                   onAskExplainInTelugu={handleAskExplainInTelugu}
                   onAskSimplify={handleAskSimplify}
                   onCorrectionSaved={refreshStats}
+                  languageMode={settings?.preferred_language || 'en_te'}
                 />
               ))}
 

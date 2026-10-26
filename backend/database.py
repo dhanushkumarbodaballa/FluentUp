@@ -194,6 +194,10 @@ def init_db():
         VALUES (1, 0, 0, 0.0, 1, ?)
         """, (today_str,))
 
+    # Migrations for bilingual Hindi support
+    ensure_column(cursor, "vocabulary", "hindi_meaning", "TEXT DEFAULT ''")
+    ensure_column(cursor, "saved_corrections", "explanation_hi", "TEXT DEFAULT ''")
+
     # Seed demo user (Dhanush Kumar)
     cursor.execute("SELECT id FROM users WHERE email = 'dhanush@fluentup.ai'")
     if not cursor.fetchone():

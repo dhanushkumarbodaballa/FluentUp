@@ -11,6 +11,7 @@ interface MessageBubbleProps {
   onAskExplainInTelugu?: (text: string) => void;
   onAskSimplify?: (text: string) => void;
   onCorrectionSaved?: () => void;
+  languageMode?: 'en_te' | 'en_hi' | 'en_only';
 }
 
 export const MessageBubble: React.FC<MessageBubbleProps> = ({
@@ -21,6 +22,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
   onAskExplainInTelugu,
   onAskSimplify,
   onCorrectionSaved,
+  languageMode = 'en_te',
 }) => {
   const isUser = message.sender === 'user';
   const [copied, setCopied] = useState(false);
@@ -135,15 +137,15 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
               {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
             </button>
 
-            {/* Explain in Telugu quick helper */}
-            {onAskExplainInTelugu && (
+            {/* Explain in Telugu / Hindi quick helper */}
+            {onAskExplainInTelugu && languageMode !== 'en_only' && (
               <button
                 onClick={() => onAskExplainInTelugu(message.text)}
-                title="Explain this in Telugu"
+                title={languageMode === 'en_hi' ? 'Explain this in Hindi' : 'Explain this in Telugu'}
                 className="hidden sm:flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-brand-600 dark:hover:text-brand-400"
               >
                 <Languages className="w-3 h-3" />
-                <span>Explain in Telugu</span>
+                <span>{languageMode === 'en_hi' ? 'Explain in Hindi' : 'Explain in Telugu'}</span>
               </button>
             )}
 

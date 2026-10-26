@@ -33,9 +33,9 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       description: "Check your sentences and fix grammar gently"
     },
     {
-      text: "Practise with me in Telugu + English.",
+      text: "Practise with me in Hindi / Telugu + English.",
       icon: Languages,
-      description: "Learn with Telugu explanations whenever stuck"
+      description: "Learn with Hindi or Telugu explanations whenever stuck"
     },
     {
       text: "Help me speak confidently.",
@@ -82,7 +82,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           className="mb-6 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-900/50 hover:bg-amber-100 transition-colors shadow-xs"
         >
           <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-          <span>మీ చాట్స్ & వొకాబులరీ సేవ్ చేసుకోవడానికి <b>Sign In / Register</b> చేయండి</span>
+          <span><b>Sign In / Register</b> to save your conversations & vocabulary bank</span>
         </button>
       )}
 

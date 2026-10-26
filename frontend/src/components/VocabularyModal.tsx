@@ -112,7 +112,7 @@ export const VocabularyModal: React.FC<VocabularyModalProps> = ({
               />
               <input
                 type="text"
-                placeholder="Telugu Meaning (e.g. సంకోచించు / Sankochinchu)"
+                placeholder="Meaning in Hindi / Telugu (e.g. संकोच करना / సంకోచించు)"
                 value={newTe}
                 onChange={(e) => setNewTe(e.target.value)}
                 className="px-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-1 focus:ring-brand-500"
@@ -191,9 +191,9 @@ export const VocabularyModal: React.FC<VocabularyModalProps> = ({
                     >
                       <Volume2 className="w-3.5 h-3.5" />
                     </button>
-                    {item.telugu_meaning && (
+                    {(item.hindi_meaning || item.telugu_meaning) && (
                       <span className="text-xs px-2 py-0.5 rounded-full bg-brand-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 font-medium">
-                        {item.telugu_meaning}
+                        {item.hindi_meaning || item.telugu_meaning}
                       </span>
                     )}
                   </div>

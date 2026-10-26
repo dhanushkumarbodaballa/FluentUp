@@ -123,12 +123,21 @@ export const SavedCorrectionsModal: React.FC<SavedCorrectionsModalProps> = ({
                   </div>
                 )}
 
-                {item.explanation_te && (
-                  <div className="flex items-start gap-2 text-xs text-brand-800 dark:text-brand-300 bg-brand-50/60 dark:bg-brand-950/30 p-2 rounded-xl border border-brand-100/50 dark:border-brand-900/30">
-                    <Languages className="w-3.5 h-3.5 text-brand-600 shrink-0 mt-0.5" />
-                    <span><strong>Telugu Tip:</strong> {item.explanation_te}</span>
-                  </div>
-                )}
+                {(item.explanation_hi || item.explanation_te || item.explanation_native) && (() => {
+                  const native = item.explanation_hi || item.explanation_native || item.explanation_te || '';
+                  if (!native.trim()) return null;
+                  const isHindi = Boolean(
+                    item.explanation_hi ||
+                    (/[\u0900-\u097F]/.test(native)) ||
+                    (/\b(hai|hain|karein|kijiye|hoga|raha|rahe|hoti|seekhein|baat|samjhein)\b/i.test(native))
+                  );
+                  return (
+                    <div className="flex items-start gap-2 text-xs text-brand-800 dark:text-brand-300 bg-brand-50/60 dark:bg-brand-950/30 p-2 rounded-xl border border-brand-100/50 dark:border-brand-900/30">
+                      <Languages className="w-3.5 h-3.5 text-brand-600 shrink-0 mt-0.5" />
+                      <span><strong>{isHindi ? 'Hindi Tip:' : 'Telugu Tip:'}</strong> {native}</span>
+                    </div>
+                  );
+                })()}
               </div>
             ))
           )}

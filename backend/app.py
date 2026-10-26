@@ -58,6 +58,7 @@ class VocabItem(BaseModel):
     word: str
     definition: str
     telugu_meaning: Optional[str] = ""
+    hindi_meaning: Optional[str] = ""
     example_sentence: Optional[str] = ""
 
 class CorrectionItem(BaseModel):
@@ -324,11 +325,22 @@ def tool_check_grammar(data: ToolGrammarRequest):
 @app.post("/api/tools/translate")
 def tool_translate(data: ToolTranslateRequest):
     phrases = {
+        # Telugu phrases
         "nenu repu vasthanu": ("I will come tomorrow.", "Future simple action."),
         "nenu college ki velthunnanu": ("I am going to college.", "Present continuous action."),
         "naku ardham kaaledhu": ("I didn't understand / Could you please repeat that?", "Polite conversation request."),
         "meetho matladatam chala anandhanga undhi": ("It was great talking to you.", "Natural closing phrase."),
-        "e roju naku chala pani undhi": ("I have a lot of work today.", "Expressing busy schedule.")
+        "e roju naku chala pani undhi": ("I have a lot of work today.", "Expressing busy schedule."),
+        # Hindi phrases
+        "main kal aunga": ("I will come tomorrow.", "Future simple action."),
+        "main kal aaunga": ("I will come tomorrow.", "Future simple action."),
+        "main college ja raha hoon": ("I am going to college.", "Present continuous action."),
+        "mujhe samajh nahi aaya": ("I didn't understand / Could you please repeat that?", "Polite conversation request."),
+        "aapse baat karke accha laga": ("It was great talking to you.", "Natural closing phrase."),
+        "aapse baat karke bohot accha laga": ("It was great talking to you.", "Natural closing phrase."),
+        "aaj mujhe bohot kaam hai": ("I have a lot of work today.", "Expressing busy schedule."),
+        "kya aap meri madad kar sakte hain": ("Could you please help me?", "Polite inquiry."),
+        "mujhe english seekhni hai": ("I want to learn English.", "Expressing learning aspiration.")
     }
     cleaned = data.text.strip().lower()
     match = phrases.get(cleaned)

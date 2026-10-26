@@ -15,6 +15,7 @@ COMMON_PATTERNS = [
             }.get(m.group(2), "past form")),
             "explanation_en": f"When talking about a finished past time like '{m.group(1)}', use the past tense of the verb.",
             "explanation_te": f"'{m.group(1)}' anedhi jarigipoyina samayam (past time). Andhukani '{m.group(2)}' badhulu past form vadali.",
+            "explanation_hi": f"'{m.group(1)}' beete hue samay (past time) ki baat karta hai. Isliye '{m.group(2)}' ki jagah past form use kijiye.",
             "practice": "Yesterday, I had a productive day."
         }
     },
@@ -29,6 +30,7 @@ COMMON_PATTERNS = [
             }.get(m.group(2), "base form")),
             "explanation_en": "After 'did' or 'didn't', always use the base form (V1), never the past tense.",
             "explanation_te": "'Did' or 'didn't' vachinappudu main verb eppudu simple base form (V1) lo undali. Rendu sarlu past tense vadakudadhu.",
+            "explanation_hi": "'Did' ya 'didn't' aane par main verb hamesha base form (V1) me hoti hai. Double past tense use nahi karte.",
             "practice": "Did you go to the market?"
         }
     },
@@ -40,6 +42,7 @@ COMMON_PATTERNS = [
             "improved": m.group(0).replace("am having", "have").replace("is having", "has").replace("are having", "have"),
             "explanation_en": "To express possession or family relations, say 'I have' or 'He has', not 'having'.",
             "explanation_te": "Manaki sonthamga unnadi cheppadaniki 'am having' anadam thappu. Simple ga 'I have a doubt' leda 'I have a brother' ani cheppali.",
+            "explanation_hi": "Possession ya sambandh batane ke liye 'am having' nahi, balki 'I have' ya 'He has' use karte hain.",
             "practice": "I have a question about this topic."
         }
     },
@@ -51,6 +54,7 @@ COMMON_PATTERNS = [
             "improved": m.group(0).replace(m.group(2), "doesn't"),
             "explanation_en": "For third-person singular (he, she, it, or singular noun), use 'doesn't' instead of 'don't'.",
             "explanation_te": "Third person singular (he, she, it, friend) tho 'don't' kaakunda 'doesn't' vadali.",
+            "explanation_hi": "He, she, it ya singular noun ke sath 'don't' nahi, 'doesn't' lagate hain.",
             "practice": f"{m.group(1).capitalize()} doesn't like tea."
         }
     },
@@ -62,6 +66,7 @@ COMMON_PATTERNS = [
             "improved": "this morning" if "today" in m.group(0) else "last night",
             "explanation_en": "In native English, say 'this morning' instead of 'today morning', and 'last night' instead of 'yesterday night'.",
             "explanation_te": "Standard English lo 'today morning' badhulu 'this morning', 'yesterday night' badhulu 'last night' ani antaru.",
+            "explanation_hi": "Standard English me 'today morning' ki jagah 'this morning', aur 'yesterday night' ki jagah 'last night' bolte hain.",
             "practice": "I woke up early this morning."
         }
     },
@@ -199,7 +204,7 @@ COMMON_PATTERNS = [
     }
 ]
 
-def analyze_grammar(text: str) -> Optional[Dict[str, str]]:
+def analyze_grammar(text: str, pref_lang: str = "en_te") -> Optional[Dict[str, str]]:
     """Analyzes text for common mistakes and returns structured correction."""
     cleaned = text.strip()
     if not cleaned or len(cleaned) < 3:
@@ -216,11 +221,21 @@ def analyze_grammar(text: str) -> Optional[Dict[str, str]]:
                 and res.get("improved")
                 and str(res.get("original")).strip().lower() != str(res.get("improved")).strip().lower()
             ):
+                exp_hi = str(res.get("explanation_hi") or "").strip()
+                exp_te = str(res.get("explanation_te") or "").strip()
+                if pref_lang == "en_hi":
+                    native_exp = exp_hi or exp_te
+                elif pref_lang == "en_only":
+                    native_exp = ""
+                else:
+                    native_exp = exp_te or exp_hi
+
                 return {
                     "original": str(res["original"]).strip(),
                     "improved": str(res["improved"]).strip(),
                     "explanation_en": str(res.get("explanation_en") or "").strip(),
-                    "explanation_te": str(res.get("explanation_te") or "").strip(),
+                    "explanation_te": native_exp,
+                    "explanation_hi": exp_hi,
                     "practice": str(res.get("practice") or "").strip()
                 }
     return None
@@ -228,7 +243,7 @@ def analyze_grammar(text: str) -> Optional[Dict[str, str]]:
 class IntelligentTutorEngine:
     """
     Intelligent built-in conversational English tutor engine.
-    Specializes in spoken English, Telugu+English bilingual explanations,
+    Specializes in spoken English, Telugu/Hindi bilingual explanations,
     natural conversational continuation, and gentle constructive corrections.
     """
 
@@ -246,7 +261,7 @@ class IntelligentTutorEngine:
         pref_lang = preferences.get("preferred_language", "en_te")
 
         # 1. Check for grammar correction opportunities
-        correction = analyze_grammar(text)
+        correction = analyze_grammar(text, pref_lang=pref_lang)
 
         # 2. Greeting check - NO correction should ever be generated for clean greetings
         if lower_text in ["hi", "hello", "hey", "namaste", "good morning", "good evening", "good afternoon", "hi there"]:
@@ -280,6 +295,19 @@ class IntelligentTutorEngine:
                 "intent": "interview"
             }
 
+        # Hindi translation / explain in Hindi
+        if any(w in lower_text for w in ["in hindi", "hindi me", "hindi mein", "hindi me batao", "hindi meaning", "translate to hindi"]):
+            return {
+                "reply": "Bilkul! (Sure!) Main Hindi mein samjhane ke liye taiyar hoon.\n\nJab bhi aap koi naya sentence seekhein, uske idea ko apni bhasha se connect karein, fir English me naturally bolein.\n\nAap kya poochna chahte hain? (What would you like me to translate or explain?)",
+                "correction": correction,
+                "suggested_replies": [
+                    "How to say 'Main kal aunga' in English?",
+                    "Teach me everyday office phrases in Hindi + English.",
+                    "Explain the difference between 'since' and 'for'."
+                ],
+                "intent": "hindi_support"
+            }
+
         # Telugu translation / explain in Telugu
         if any(w in lower_text for w in ["in telugu", "telugu lo", "telugu lo cheppu", "translate", "telugu meaning"]):
             return {
@@ -308,8 +336,11 @@ class IntelligentTutorEngine:
 
         # Confidence building
         if any(w in lower_text for w in ["confidence", "fear", "hesitate", "hesitation", "nervous"]):
-            reply = "I understand completely. Many Telugu speakers feel hesitant or worry about making mistakes in English. But remember: communication is about expressing your idea, not perfection!\n\nEvery mistake you make here is a step towards speaking fluently. Let's start with a simple fun question: What is one movie or hobby you really enjoy?"
-            if pref_lang == "en_te":
+            speaker_type = "Hindi speakers" if pref_lang == "en_hi" else ("learners" if pref_lang == "en_only" else "Telugu speakers")
+            reply = f"I understand completely. Many {speaker_type} feel hesitant or worry about making mistakes in English. But remember: communication is about expressing your idea, not perfection!\n\nEvery mistake you make here is a step towards speaking fluently. Let's start with a simple fun question: What is one movie or hobby you really enjoy?"
+            if pref_lang == "en_hi":
+                reply += "\n\n(Galtiyon se darna band kijiye. Main aapki madad ke liye hoon!)"
+            elif pref_lang == "en_te":
                 reply += "\n\n(Mistakes gurinchi bhayam vaddu. Meetho nenu unnanu!)"
             return {
                 "reply": reply,

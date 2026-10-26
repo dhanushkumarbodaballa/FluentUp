@@ -36,7 +36,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [englishLevel, setEnglishLevel] = useState<'beginner' | 'intermediate' | 'advanced'>('beginner');
-  const [preferredLanguage, setPreferredLanguage] = useState<'en_te' | 'en_only'>('en_te');
+  const [preferredLanguage, setPreferredLanguage] = useState<'en_te' | 'en_hi' | 'en_only'>('en_te');
 
   if (!isOpen) return null;
 
@@ -263,11 +263,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Tutor Teaching Language
                 </label>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <button
                     type="button"
                     onClick={() => setPreferredLanguage('en_te')}
-                    className={`p-2.5 rounded-xl border text-left transition-all ${
+                    className={`p-2 rounded-xl border text-left transition-all ${
                       preferredLanguage === 'en_te'
                         ? 'border-brand-500 bg-brand-50/70 dark:bg-brand-950/50 text-brand-700 dark:text-brand-300 ring-1 ring-brand-500'
                         : 'border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 text-slate-700 dark:text-slate-300'
@@ -275,28 +275,46 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   >
                     <div className="flex items-center gap-1.5 text-xs font-bold">
                       <Languages className="w-3.5 h-3.5 text-brand-600" />
-                      <span>Telugu + English</span>
+                      <span>Telugu + Eng</span>
                     </div>
                     <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
-                      Recommended for clear grammar rules
+                      తెలుగు వివరణలు
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setPreferredLanguage('en_hi')}
+                    className={`p-2 rounded-xl border text-left transition-all ${
+                      preferredLanguage === 'en_hi'
+                        ? 'border-brand-500 bg-brand-50/70 dark:bg-brand-950/50 text-brand-700 dark:text-brand-300 ring-1 ring-brand-500'
+                        : 'border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 text-slate-700 dark:text-slate-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5 text-xs font-bold">
+                      <Languages className="w-3.5 h-3.5 text-indigo-600" />
+                      <span>Hindi + Eng</span>
+                    </div>
+                    <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
+                      हिंदी में समझें
                     </div>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setPreferredLanguage('en_only')}
-                    className={`p-2.5 rounded-xl border text-left transition-all ${
+                    className={`p-2 rounded-xl border text-left transition-all ${
                       preferredLanguage === 'en_only'
                         ? 'border-brand-500 bg-brand-50/70 dark:bg-brand-950/50 text-brand-700 dark:text-brand-300 ring-1 ring-brand-500'
                         : 'border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 text-slate-700 dark:text-slate-300'
                     }`}
                   >
                     <div className="flex items-center gap-1.5 text-xs font-bold">
-                      <GraduationCap className="w-3.5 h-3.5 text-indigo-600" />
+                      <GraduationCap className="w-3.5 h-3.5 text-purple-600" />
                       <span>English Only</span>
                     </div>
                     <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
-                      Full immersion English experience
+                      Full immersion
                     </div>
                   </button>
                 </div>

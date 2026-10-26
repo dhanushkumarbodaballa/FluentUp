@@ -2,7 +2,9 @@ export interface GrammarCorrection {
   original: string;
   improved: string;
   explanation_en: string;
-  explanation_te: string;
+  explanation_te?: string;
+  explanation_hi?: string;
+  explanation_native?: string;
   practice?: string;
 }
 
@@ -31,6 +33,7 @@ export interface VocabularyWord {
   word: string;
   definition: string;
   telugu_meaning?: string;
+  hindi_meaning?: string;
   example_sentence?: string;
   mastered?: number;
   created_at?: string;
@@ -42,12 +45,14 @@ export interface SavedCorrection {
   improved_sentence: string;
   explanation_en: string;
   explanation_te?: string;
+  explanation_hi?: string;
+  explanation_native?: string;
   practice_sentence?: string;
   created_at?: string;
 }
 
 export interface UserSettings {
-  preferred_language: 'en_te' | 'en_only';
+  preferred_language: 'en_te' | 'en_hi' | 'en_only';
   english_level: 'beginner' | 'intermediate' | 'advanced';
   voice_speed: number;
   female_voice_name: string;
@@ -71,6 +76,6 @@ export interface AuthUser {
   name: string;
   email: string;
   english_level: 'beginner' | 'intermediate' | 'advanced';
-  preferred_language: 'en_te' | 'en_only';
+  preferred_language: 'en_te' | 'en_hi' | 'en_only';
   avatar?: string;
 }

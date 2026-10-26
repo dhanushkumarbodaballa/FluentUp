@@ -199,20 +199,29 @@ export const GrammarCorrectionCard: React.FC<GrammarCorrectionCardProps> = ({
           </div>
         )}
 
-        {/* Telugu Tip */}
-        {correction.explanation_te && (
-          <div className="flex items-start gap-2.5 bg-brand-50/70 dark:bg-brand-950/30 p-2.5 rounded-xl border border-brand-200/70 dark:border-brand-900/50">
-            <Languages className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />
-            <div className="flex-1 min-w-0 leading-relaxed">
-              <span className="font-bold text-brand-800 dark:text-brand-300 mr-1.5">
-                🇮🇳 తెలుగు వివరణ:
-              </span>
-              <span className="text-slate-800 dark:text-slate-200 font-medium">
-                {correction.explanation_te}
-              </span>
+        {/* Native Language Tip (Telugu / Hindi) */}
+        {(correction.explanation_hi || correction.explanation_te || correction.explanation_native) && (() => {
+          const nativeText = correction.explanation_hi || correction.explanation_native || correction.explanation_te || '';
+          if (!nativeText.trim()) return null;
+          const isHindi = Boolean(
+            correction.explanation_hi ||
+            (/[\u0900-\u097F]/.test(nativeText)) ||
+            (/\b(hai|hain|karein|kijiye|hoga|hogi|raha|rahe|hoti|seekhein|baat|samjhein|lagate|kare|apni)\b/i.test(nativeText))
+          );
+          return (
+            <div className="flex items-start gap-2.5 bg-brand-50/70 dark:bg-brand-950/30 p-2.5 rounded-xl border border-brand-200/70 dark:border-brand-900/50">
+              <Languages className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0 leading-relaxed">
+                <span className="font-bold text-brand-800 dark:text-brand-300 mr-1.5">
+                  {isHindi ? '🇮🇳 हिंदी विवरण:' : '🇮🇳 తెలుగు వివరణ:'}
+                </span>
+                <span className="text-slate-800 dark:text-slate-200 font-medium">
+                  {nativeText}
+                </span>
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Practice sentence with interactive copy/repeat button */}
         {correction.practice && (

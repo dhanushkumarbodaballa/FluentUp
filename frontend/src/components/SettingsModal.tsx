@@ -22,7 +22,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   femaleVoice,
   onSelectVoice,
 }) => {
-  const [prefLang, setPrefLang] = useState<'en_te' | 'en_only'>(settings?.preferred_language || 'en_te');
+  const [prefLang, setPrefLang] = useState<'en_te' | 'en_hi' | 'en_only'>(settings?.preferred_language || 'en_te');
   const [level, setLevel] = useState<'beginner' | 'intermediate' | 'advanced'>(settings?.english_level || 'beginner');
   const [speed, setSpeed] = useState<number>(settings?.voice_speed || 1.0);
   const [autoSpeak, setAutoSpeak] = useState<boolean>(settings?.auto_speak === 1);
@@ -92,19 +92,38 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <Globe className="w-4 h-4 text-brand-500" />
               <span>Explanation Language</span>
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               <button
                 type="button"
                 onClick={() => setPrefLang('en_te')}
                 className={`p-3 rounded-2xl border text-left transition-all ${
                   prefLang === 'en_te'
-                    ? 'border-brand-500 bg-brand-50/50 dark:bg-brand-950/40 text-brand-900 dark:text-brand-200 font-medium'
+                    ? 'border-brand-500 bg-brand-50/50 dark:bg-brand-950/40 text-brand-900 dark:text-brand-200 font-medium ring-1 ring-brand-500'
                     : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
                 }`}
               >
-                <div className="font-bold">Telugu + English (Bilingual)</div>
+                <div className="font-bold flex items-center gap-1.5">
+                  <span>Telugu + English</span>
+                </div>
                 <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                  Clear explanations in Telugu transliteration whenever helpful.
+                  తెలుగు వివరణలతో నేర్చుకోండి (Telugu transliteration & tips)
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setPrefLang('en_hi')}
+                className={`p-3 rounded-2xl border text-left transition-all ${
+                  prefLang === 'en_hi'
+                    ? 'border-brand-500 bg-brand-50/50 dark:bg-brand-950/40 text-brand-900 dark:text-brand-200 font-medium ring-1 ring-brand-500'
+                    : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                }`}
+              >
+                <div className="font-bold flex items-center gap-1.5">
+                  <span>Hindi + English</span>
+                </div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  हिंदी में समझें (Hindi & Hinglish explanations & examples)
                 </div>
               </button>
 
@@ -113,13 +132,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 onClick={() => setPrefLang('en_only')}
                 className={`p-3 rounded-2xl border text-left transition-all ${
                   prefLang === 'en_only'
-                    ? 'border-brand-500 bg-brand-50/50 dark:bg-brand-950/40 text-brand-900 dark:text-brand-200 font-medium'
+                    ? 'border-brand-500 bg-brand-50/50 dark:bg-brand-950/40 text-brand-900 dark:text-brand-200 font-medium ring-1 ring-brand-500'
                     : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
                 }`}
               >
-                <div className="font-bold">English Only</div>
+                <div className="font-bold flex items-center gap-1.5">
+                  <span>English Only</span>
+                </div>
                 <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                  100% immersive English practice without regional translation.
+                  100% full English immersion without regional translations
                 </div>
               </button>
             </div>

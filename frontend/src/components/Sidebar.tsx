@@ -349,7 +349,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </div>
               <button
                 onClick={onLogout}
-                title="Log Out (నిష్క్రమించండి)"
+                title="Log Out"
                 className="p-1.5 text-slate-400 hover:text-rose-500 rounded-lg hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors"
               >
                 <LogOut className="w-3.5 h-3.5" />
