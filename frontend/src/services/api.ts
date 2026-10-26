@@ -34,8 +34,15 @@ export async function loginUser(email: string, password: string): Promise<{ user
     body: JSON.stringify({ email, password }),
   });
   if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.detail || 'Login failed');
+    let errorMsg = 'Login failed. Please check your credentials.';
+    try {
+      const errorData = await res.json();
+      errorMsg = errorData.detail || errorData.message || errorMsg;
+    } catch {
+      const text = await res.text().catch(() => '');
+      if (text && text.length < 200) errorMsg = text;
+    }
+    throw new Error(errorMsg);
   }
   const data = await res.json();
   setAuthToken(data.token);
@@ -55,8 +62,15 @@ export async function registerUser(params: {
     body: JSON.stringify(params),
   });
   if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.detail || 'Registration failed');
+    let errorMsg = 'Registration failed. Please try again.';
+    try {
+      const errorData = await res.json();
+      errorMsg = errorData.detail || errorData.message || errorMsg;
+    } catch {
+      const text = await res.text().catch(() => '');
+      if (text && text.length < 200) errorMsg = text;
+    }
+    throw new Error(errorMsg);
   }
   const data = await res.json();
   setAuthToken(data.token);

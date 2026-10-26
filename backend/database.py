@@ -7,9 +7,41 @@ import secrets
 from datetime import datetime
 from typing import List, Dict, Any, Optional
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "fluentup.db")
+def get_db_path() -> str:
+    # In serverless environments like Vercel or AWS Lambda, root directory is strictly read-only.
+    # We use /tmp to allow SQLite read and write operations.
+    is_serverless = bool(os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"))
+    backend_dir = os.path.dirname(os.path.abspath(__file__))
+
+    is_read_only = False
+    try:
+        test_file = os.path.join(backend_dir, ".write_test")
+        with open(test_file, "w") as f:
+            f.write("1")
+        if os.path.exists(test_file):
+            os.remove(test_file)
+    except Exception:
+        is_read_only = True
+
+    if is_serverless or is_read_only:
+        tmp_dir = "/tmp" if os.path.exists("/tmp") else backend_dir
+        tmp_db = os.path.join(tmp_dir, "fluentup.db")
+        seed_db = os.path.join(backend_dir, "fluentup.db")
+        if not os.path.exists(tmp_db) and os.path.exists(seed_db):
+            try:
+                import shutil
+                shutil.copy2(seed_db, tmp_db)
+            except Exception as e:
+                print(f"Could not copy seed database to /tmp: {e}")
+        return tmp_db
+
+    return os.path.join(backend_dir, "fluentup.db")
+
+DB_PATH = get_db_path()
 
 def get_connection():
+    global DB_PATH
+    DB_PATH = get_db_path()
     conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     conn.row_factory = sqlite3.Row
     return conn

@@ -132,6 +132,10 @@ def register(data: RegisterRequest):
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Registration failed: {str(e)}")
 
 @app.post("/api/auth/login")
 def login(data: LoginRequest):
@@ -139,6 +143,10 @@ def login(data: LoginRequest):
         return db.login_user(email=data.email, password=data.password)
     except ValueError as e:
         raise HTTPException(status_code=401, detail=str(e))
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Login failed: {str(e)}")
 
 @app.get("/api/auth/me")
 def get_me(authorization: Optional[str] = Header(None)):
