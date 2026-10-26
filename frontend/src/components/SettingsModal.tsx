@@ -24,6 +24,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 }) => {
   const [prefLang, setPrefLang] = useState<'en_te' | 'en_hi' | 'en_only'>(settings?.preferred_language || 'en_te');
   const [level, setLevel] = useState<'beginner' | 'intermediate' | 'advanced'>(settings?.english_level || 'beginner');
+  const [learningTarget, setLearningTarget] = useState<'english' | 'hindi'>(settings?.learning_target || 'english');
   const [speed, setSpeed] = useState<number>(settings?.voice_speed || 1.0);
   const [autoSpeak, setAutoSpeak] = useState<boolean>(settings?.auto_speak === 1);
   const [isSaving, setIsSaving] = useState(false);
@@ -33,6 +34,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     if (settings) {
       setPrefLang(settings.preferred_language);
       setLevel(settings.english_level);
+      setLearningTarget(settings.learning_target || 'english');
       setSpeed(settings.voice_speed);
       setAutoSpeak(settings.auto_speak === 1);
     }
@@ -52,6 +54,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       const updated = await updateSettings({
         preferred_language: prefLang,
         english_level: level,
+        learning_target: learningTarget,
         voice_speed: speed,
         auto_speak: autoSpeak ? 1 : 0,
       });
@@ -86,6 +89,49 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
         {/* Settings Body */}
         <div className="p-5 overflow-y-auto space-y-5 text-xs">
+          {/* Primary Learning Target / Tutor Mode */}
+          <div className="space-y-2">
+            <label className="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-brand-500" />
+              <span>Learning Goal / Tutor Mode</span>
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <button
+                type="button"
+                onClick={() => setLearningTarget('english')}
+                className={`p-3 rounded-2xl border text-left transition-all ${
+                  learningTarget === 'english'
+                    ? 'border-brand-500 bg-brand-50/50 dark:bg-brand-950/40 text-brand-900 dark:text-brand-200 font-medium ring-1 ring-brand-500'
+                    : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                }`}
+              >
+                <div className="font-bold flex items-center gap-1.5 text-slate-900 dark:text-white">
+                  <span>🎓 Learn English</span>
+                </div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                  Maya acts as your English speaking coach, fixing grammar and boosting conversation confidence.
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setLearningTarget('hindi')}
+                className={`p-3 rounded-2xl border text-left transition-all ${
+                  learningTarget === 'hindi'
+                    ? 'border-amber-500 bg-amber-50/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 font-medium ring-1 ring-amber-500'
+                    : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                }`}
+              >
+                <div className="font-bold flex items-center gap-1.5 text-slate-900 dark:text-white">
+                  <span>🇮🇳 Learn Hindi (हिंदी)</span>
+                </div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                  Maya acts as your Hindi Tutor, translating words/sentences with Devanagari, pronunciation, and daily examples!
+                </div>
+              </button>
+            </div>
+          </div>
+
           {/* Explanation Language */}
           <div className="space-y-2">
             <label className="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">

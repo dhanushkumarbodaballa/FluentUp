@@ -26,6 +26,8 @@ interface ComposerProps {
   onResetTranscript: () => void;
   languageMode: 'en_te' | 'en_hi' | 'en_only';
   onToggleLanguageMode: () => void;
+  learningTarget?: 'english' | 'hindi';
+  onToggleLearningTarget?: () => void;
 }
 
 export const Composer: React.FC<ComposerProps> = ({
@@ -43,6 +45,8 @@ export const Composer: React.FC<ComposerProps> = ({
   onResetTranscript,
   languageMode,
   onToggleLanguageMode,
+  learningTarget = 'english',
+  onToggleLearningTarget,
 }) => {
   const [text, setText] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -165,7 +169,11 @@ export const Composer: React.FC<ComposerProps> = ({
                   <span className="text-slate-400 dark:text-slate-500"> {interimTranscript}</span>
                 </>
               ) : (
-                <span className="text-slate-400">Speak now in English... Maya is listening.</span>
+                <span className="text-slate-400">
+                  {learningTarget === 'hindi'
+                    ? "Speak now in English or Hindi... Maya will translate & teach you Hindi!"
+                    : "Speak now in English... Maya is listening."}
+                </span>
               )}
             </div>
           </div>
@@ -177,7 +185,11 @@ export const Composer: React.FC<ComposerProps> = ({
               value={text}
               onChange={(e) => setText(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask anything, say something in English, or talk with Maya..."
+              placeholder={
+                learningTarget === 'hindi'
+                  ? "Speak or type any word to translate & learn in Hindi... (e.g. 'Water', 'How are you?')"
+                  : "Ask anything, say something in English, or talk with Maya..."
+              }
               rows={1}
               disabled={isLoading}
               className="w-full resize-none bg-transparent px-4 pt-3.5 pb-2 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none disabled:opacity-60"
@@ -186,26 +198,41 @@ export const Composer: React.FC<ComposerProps> = ({
             {/* Bottom Actions Row */}
             <div className="flex items-center justify-between px-3 pb-2.5 pt-1">
               {/* Left helpers */}
-              <div className="flex items-center gap-1.5">
-                {/* Language mode toggle */}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {/* Tutor Goal Mode Switcher Pill */}
+                {onToggleLearningTarget && (
+                  <button
+                    onClick={onToggleLearningTarget}
+                    title="Toggle Tutor Mode: English Tutor ↔ Hindi Tutor"
+                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all shadow-2xs ${
+                      learningTarget === 'hindi'
+                        ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-800'
+                        : 'bg-brand-50 dark:bg-brand-950/80 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-900'
+                    }`}
+                  >
+                    <span>{learningTarget === 'hindi' ? '🇮🇳 Hindi Tutor' : '🎓 English Tutor'}</span>
+                  </button>
+                )}
+
+                {/* Language explanation mode toggle */}
                 <button
                   onClick={onToggleLanguageMode}
-                  title="Switch language mode (Telugu / Hindi / English)"
-                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${
+                  title="Switch explanation language (Telugu / Hindi / English)"
+                  className={`flex items-center gap-1.5 px-2 py-1 rounded-full text-[11px] font-medium transition-colors ${
                     languageMode === 'en_te'
-                      ? 'bg-brand-50 dark:bg-brand-950/70 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-900'
+                      ? 'bg-brand-50/60 dark:bg-brand-950/50 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-900'
                       : languageMode === 'en_hi'
-                      ? 'bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900'
+                      ? 'bg-indigo-50/60 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900'
                       : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
                   }`}
                 >
-                  <Languages className="w-3.5 h-3.5" />
+                  <Languages className="w-3 h-3" />
                   <span>
                     {languageMode === 'en_te'
-                      ? 'Telugu + Eng'
+                      ? 'Telugu'
                       : languageMode === 'en_hi'
-                      ? 'Hindi + Eng'
-                      : 'English Only'}
+                      ? 'Hindi'
+                      : 'Eng Only'}
                   </span>
                 </button>
 

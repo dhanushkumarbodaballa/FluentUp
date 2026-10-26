@@ -194,9 +194,11 @@ def init_db():
         VALUES (1, 0, 0, 0.0, 1, ?)
         """, (today_str,))
 
-    # Migrations for bilingual Hindi support
+    # Migrations for bilingual Hindi support and tutor modes
     ensure_column(cursor, "vocabulary", "hindi_meaning", "TEXT DEFAULT ''")
     ensure_column(cursor, "saved_corrections", "explanation_hi", "TEXT DEFAULT ''")
+    ensure_column(cursor, "settings", "learning_target", "TEXT DEFAULT 'english'")
+    ensure_column(cursor, "users", "learning_target", "TEXT DEFAULT 'english'")
 
     # Seed demo user (Dhanush Kumar)
     cursor.execute("SELECT id FROM users WHERE email = 'dhanush@fluentup.ai'")
@@ -528,7 +530,7 @@ def delete_saved_correction(corr_id: str):
 def get_settings(user_id: Optional[str] = None) -> Dict[str, Any]:
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT preferred_language, english_level, voice_speed, female_voice_name, auto_speak, tutor_name FROM settings WHERE id = 1")
+    cursor.execute("SELECT preferred_language, english_level, voice_speed, female_voice_name, auto_speak, tutor_name, learning_target FROM settings WHERE id = 1")
     row = cursor.fetchone()
     settings_dict = dict(row) if row else {
         "preferred_language": "en_te",
@@ -536,18 +538,23 @@ def get_settings(user_id: Optional[str] = None) -> Dict[str, Any]:
         "voice_speed": 1.0,
         "female_voice_name": "default",
         "auto_speak": 1,
-        "tutor_name": "Maya"
+        "tutor_name": "Maya",
+        "learning_target": "english"
     }
+    if not settings_dict.get("learning_target"):
+        settings_dict["learning_target"] = "english"
 
     # If user is logged in, inherit their chosen level and language preferences
     if user_id and user_id != "guest":
-        cursor.execute("SELECT english_level, preferred_language FROM users WHERE id = ?", (user_id,))
+        cursor.execute("SELECT english_level, preferred_language, learning_target FROM users WHERE id = ?", (user_id,))
         user_row = cursor.fetchone()
         if user_row:
             if user_row["english_level"]:
                 settings_dict["english_level"] = user_row["english_level"]
             if user_row["preferred_language"]:
                 settings_dict["preferred_language"] = user_row["preferred_language"]
+            if user_row["learning_target"]:
+                settings_dict["learning_target"] = user_row["learning_target"]
 
     conn.close()
     return settings_dict
@@ -562,7 +569,8 @@ def update_settings(data: Dict[str, Any], user_id: Optional[str] = None) -> Dict
             voice_speed = COALESCE(?, voice_speed),
             female_voice_name = COALESCE(?, female_voice_name),
             auto_speak = COALESCE(?, auto_speak),
-            tutor_name = COALESCE(?, tutor_name)
+            tutor_name = COALESCE(?, tutor_name),
+            learning_target = COALESCE(?, learning_target)
         WHERE id = 1
     """, (
         data.get("preferred_language"),
@@ -570,7 +578,8 @@ def update_settings(data: Dict[str, Any], user_id: Optional[str] = None) -> Dict
         data.get("voice_speed"),
         data.get("female_voice_name"),
         data.get("auto_speak"),
-        data.get("tutor_name")
+        data.get("tutor_name"),
+        data.get("learning_target")
     ))
 
     # Also update user record if user is logged in
@@ -579,6 +588,8 @@ def update_settings(data: Dict[str, Any], user_id: Optional[str] = None) -> Dict
             cursor.execute("UPDATE users SET english_level = ? WHERE id = ?", (data["english_level"], user_id))
         if "preferred_language" in data and data["preferred_language"]:
             cursor.execute("UPDATE users SET preferred_language = ? WHERE id = ?", (data["preferred_language"], user_id))
+        if "learning_target" in data and data["learning_target"]:
+            cursor.execute("UPDATE users SET learning_target = ? WHERE id = ?", (data["learning_target"], user_id))
 
     conn.commit()
     conn.close()

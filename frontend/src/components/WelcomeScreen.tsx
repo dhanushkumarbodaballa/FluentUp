@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, MessageCircle, Mic, HelpCircle, Briefcase, HeartHandshake, Languages } from 'lucide-react';
+import { Sparkles, MessageCircle, Mic, HelpCircle, Briefcase, HeartHandshake, Languages, BookOpen, Coffee, Compass } from 'lucide-react';
 
 interface WelcomeScreenProps {
   onSelectPrompt: (prompt: string) => void;
@@ -7,6 +7,8 @@ interface WelcomeScreenProps {
   tutorName?: string;
   userName?: string;
   onOpenAuth?: () => void;
+  learningTarget?: 'english' | 'hindi';
+  onToggleLearningTarget?: (target: 'english' | 'hindi') => void;
 }
 
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
@@ -15,8 +17,12 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   tutorName = "Maya",
   userName,
   onOpenAuth,
+  learningTarget = 'english',
+  onToggleLearningTarget,
 }) => {
-  const suggestedPrompts = [
+  const isHindi = learningTarget === 'hindi';
+
+  const englishPrompts = [
     {
       text: "Let's talk in English.",
       icon: MessageCircle,
@@ -49,13 +55,86 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
     }
   ];
 
+  const hindiPrompts = [
+    {
+      text: "How do I say 'Water' in Hindi?",
+      icon: Sparkles,
+      description: "Translate words with Devanagari, pronunciation & examples"
+    },
+    {
+      text: "Teach me daily greetings in Hindi.",
+      icon: MessageCircle,
+      description: "Namaste, Shubh Prabhaat, Aap kaise hain & respect levels"
+    },
+    {
+      text: "How to say 'Thank you' in Hindi?",
+      icon: HeartHandshake,
+      description: "Dhanyavaad, Shukriya & polite conversational etiquette"
+    },
+    {
+      text: "Translate 'Where are you going?' to Hindi.",
+      icon: Compass,
+      description: "Learn natural spoken Hindi questions and sentence structure"
+    },
+    {
+      text: "How to order tea and food in Hindi?",
+      icon: Coffee,
+      description: "Everyday cafe, restaurant, and market phrases"
+    },
+    {
+      text: "Teach me 5 useful spoken Hindi words.",
+      icon: BookOpen,
+      description: "Build your Hindi vocabulary with everyday words"
+    }
+  ];
+
+  const suggestedPrompts = isHindi ? hindiPrompts : englishPrompts;
+
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-6 max-w-2xl mx-auto text-center animate-fadeIn">
+      {/* Mode Switcher Toggle Pill */}
+      {onToggleLearningTarget && (
+        <div className="mb-5 inline-flex p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs">
+          <button
+            onClick={() => onToggleLearningTarget('english')}
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+              !isHindi
+                ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <span>🎓 Learn English</span>
+          </button>
+          <button
+            onClick={() => onToggleLearningTarget('hindi')}
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+              isHindi
+                ? 'bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <span>🇮🇳 Learn Hindi (हिंदी)</span>
+          </button>
+        </div>
+      )}
+
       {/* Small Elegant AI Tutor Avatar / Animated Voice Indicator */}
-      <div className="relative mb-5">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-brand-600 via-indigo-500 to-purple-400 p-0.5 shadow-lg shadow-brand-500/30 flex items-center justify-center">
+      <div className="relative mb-4">
+        <div
+          className={`w-16 h-16 rounded-full p-0.5 shadow-lg flex items-center justify-center ${
+            isHindi
+              ? 'bg-gradient-to-tr from-amber-500 via-orange-500 to-rose-500 shadow-amber-500/30'
+              : 'bg-gradient-to-tr from-brand-600 via-indigo-500 to-purple-400 shadow-brand-500/30'
+          }`}
+        >
           <div className="w-full h-full rounded-full bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden">
-            <span className="text-2xl font-bold bg-gradient-to-tr from-brand-600 to-indigo-500 bg-clip-text text-transparent">
+            <span
+              className={`text-2xl font-bold bg-clip-text text-transparent ${
+                isHindi
+                  ? 'bg-gradient-to-tr from-amber-500 to-rose-500'
+                  : 'bg-gradient-to-tr from-brand-600 to-indigo-500'
+              }`}
+            >
               M
             </span>
           </div>
@@ -67,19 +146,27 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
 
       {/* Greeting Title */}
       <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight mb-2">
-        {userName ? `Hi, ${userName}! Let's practice English.` : "Hi! I'm your English buddy."}
+        {isHindi
+          ? userName
+            ? `नमस्ते, ${userName}! Let's learn Hindi.`
+            : "नमस्ते! I'm Maya, your Hindi Tutor."
+          : userName
+          ? `Hi, ${userName}! Let's practice English.`
+          : "Hi! I'm your English buddy."}
       </h1>
 
       {/* Subtitle & Supportive Message */}
       <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-lg leading-relaxed mb-4">
-        Let's improve your English together. We can talk about anything, practise speaking, or fix your sentences. Don't worry about mistakes — I'll help you.
+        {isHindi
+          ? "Speak or type any word or sentence in English or Telugu. I'll translate it to Hindi, guide your pronunciation, and help you speak Hindi fluently!"
+          : "Let's improve your English together. We can talk about anything, practise speaking, or fix your sentences. Don't worry about mistakes — I'll help you."}
       </p>
 
       {/* Guest Login Suggestion Pill */}
       {!userName && onOpenAuth && (
         <button
           onClick={onOpenAuth}
-          className="mb-6 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-900/50 hover:bg-amber-100 transition-colors shadow-xs"
+          className="mb-5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-900/50 hover:bg-amber-100 transition-colors shadow-xs"
         >
           <Sparkles className="w-3.5 h-3.5 text-amber-500" />
           <span><b>Sign In / Register</b> to save your conversations & vocabulary bank</span>
@@ -116,7 +203,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-brand-500 dark:hover:border-brand-500 hover:shadow-sm hover:shadow-brand-500/10 transition-all text-left group"
             >
               <div className="flex items-center gap-2 mb-1">
-                <Icon className="w-4 h-4 text-brand-500 group-hover:scale-110 transition-transform" />
+                <Icon className={`w-4 h-4 group-hover:scale-110 transition-transform ${isHindi ? 'text-amber-500' : 'text-brand-500'}`} />
                 <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-brand-600 dark:group-hover:text-brand-400">
                   {item.text}
                 </span>

@@ -47,6 +47,7 @@ class ChatRequest(BaseModel):
     conversation_id: Optional[str] = None
     message: str
     audio_duration_seconds: Optional[float] = 0.0
+    learning_target: Optional[str] = None # 'english' or 'hindi'
 
 class ConversationCreate(BaseModel):
     title: Optional[str] = "New Conversation"
@@ -66,6 +67,7 @@ class CorrectionItem(BaseModel):
     improved_sentence: str
     explanation_en: str
     explanation_te: Optional[str] = ""
+    explanation_hi: Optional[str] = ""
     practice_sentence: Optional[str] = ""
 
 class SettingsUpdate(BaseModel):
@@ -75,13 +77,14 @@ class SettingsUpdate(BaseModel):
     female_voice_name: Optional[str] = None
     auto_speak: Optional[int] = None
     tutor_name: Optional[str] = None
+    learning_target: Optional[str] = None # 'english' or 'hindi'
 
 class ToolGrammarRequest(BaseModel):
     text: str
 
 class ToolTranslateRequest(BaseModel):
     text: str
-    target_language: str = "te" # 'te' or 'en'
+    target_language: str = "hi" # 'hi', 'te', or 'en'
 
 class ToolSimplifyRequest(BaseModel):
     text: str
@@ -211,6 +214,8 @@ def chat(request: ChatRequest, authorization: Optional[str] = Header(None)):
 
     # 2. Fetch user preferences
     prefs = db.get_settings(user_id)
+    if request.learning_target:
+        prefs["learning_target"] = request.learning_target
 
     # 3. Save user message to database
     db.add_message(user_msg_id, conv_id, "user", request.message, user_id=user_id)
@@ -324,6 +329,35 @@ def tool_check_grammar(data: ToolGrammarRequest):
 
 @app.post("/api/tools/translate")
 def tool_translate(data: ToolTranslateRequest):
+    target = data.target_language.lower().strip()
+    cleaned = data.text.strip().lower()
+
+    # English -> Hindi translations for common words & phrases
+    en_to_hi = {
+        "water": ("पानी (Paani)", "Masculine noun (पुल्लिंग). Example: मुझे पानी चाहिए (Mujhe paani chahiye)."),
+        "food": ("खाना (Khaana)", "Masculine noun. Example: खाना तैयार है (Khaana tayyar hai)."),
+        "tea": ("चाय (Chaay)", "Feminine noun (स्त्रीलिंग). Example: मुझे एक कप चाय चाहिए (Mujhe ek cup chai chahiye)."),
+        "friend": ("दोस्त / मित्र (Dost / Mitra)", "Common noun. Example: वह मेरा अच्छा दोस्त है (Woh mera accha dost hai)."),
+        "hello": ("नमस्ते (Namaste)", "Respectful traditional Indian greeting used any time of day."),
+        "thank you": ("धन्यवाद / शुक्रिया (Dhanyavaad / Shukriya)", "Polite expression of gratitude."),
+        "good morning": ("शुभ प्रभात (Shubh Prabhaat) / नमस्ते", "Morning greeting. You can also simply say 'Namaste'."),
+        "how are you": ("आप कैसे हैं? (Aap kaise hain?)", "Polite, respectful way to ask someone how they are."),
+        "where are you going": ("आप कहाँ जा रहे हैं? (Aap kahaan ja rahe hain?)", "Used when asking someone's destination politely."),
+        "what is your name": ("आपका नाम क्या है? (Aapka naam kya hai?)", "Polite way to inquire someone's name in Hindi."),
+        "my name is": ("मेरा नाम ... है। (Mera naam ... hai.)", "Standard Hindi self-introduction structure."),
+        "help": ("मदद / सहायता (Madad / Sahaayata)", "Feminine noun. Example: क्या आप मेरी मदद करेंगे? (Will you help me?)."),
+        "book": ("किताब / पुस्तक (Kitaab / Pustak)", "Feminine noun. Example: यह मेरी किताब है (Yeh meri kitaab hai)."),
+        "house": ("घर (Ghar)", "Masculine noun. Example: यह मेरा घर है (Yeh mera ghar hai)."),
+        "home": ("घर (Ghar)", "Masculine noun. Example: मैं घर पर हूँ (Main ghar par hoon)."),
+        "money": ("पैसे / रुपया (Paise / Rupaya)", "Plural masculine. Example: इसके कितने पैसे हुए? (How much money is this?)."),
+        "time": ("समय / वक़्त (Samay / Waqt)", "Masculine noun. Example: क्या समय हुआ है? (What time is it?)."),
+        "work": ("काम (Kaam)", "Masculine noun. Example: मैं काम कर रहा हूँ (Main kaam kar raha hoon)."),
+        "come": ("आना (Aana)", "Verb. Example: यहाँ आइए (Yahaan aaiye - Come here politely)."),
+        "go": ("जाना (Jaana)", "Verb. Example: अब हमें जाना चाहिए (Now we should go)."),
+        "eat": ("खाना (Khaana)", "Verb. Example: आपने क्या खाया? (What did you eat?)."),
+        "drink": ("पीना (Peena)", "Verb. Example: पानी पियो (Drink water).")
+    }
+
     phrases = {
         # Telugu phrases
         "nenu repu vasthanu": ("I will come tomorrow.", "Future simple action."),
@@ -342,7 +376,15 @@ def tool_translate(data: ToolTranslateRequest):
         "kya aap meri madad kar sakte hain": ("Could you please help me?", "Polite inquiry."),
         "mujhe english seekhni hai": ("I want to learn English.", "Expressing learning aspiration.")
     }
-    cleaned = data.text.strip().lower()
+
+    if target == "hi" and cleaned in en_to_hi:
+        match = en_to_hi[cleaned]
+        return {
+            "original": data.text,
+            "translated": match[0],
+            "note": match[1]
+        }
+
     match = phrases.get(cleaned)
     if match:
         return {
@@ -350,6 +392,14 @@ def tool_translate(data: ToolTranslateRequest):
             "translated": match[0],
             "note": match[1]
         }
+
+    if target == "hi":
+        return {
+            "original": data.text,
+            "translated": f"In Hindi, '{data.text.capitalize()}' is translated naturally in context.",
+            "note": "Ask Maya directly in chat to get the exact pronunciation and daily Hindi sentence examples!"
+        }
+
     return {
         "original": data.text,
         "translated": f"In English, express this simply: '{data.text.capitalize()}'.",

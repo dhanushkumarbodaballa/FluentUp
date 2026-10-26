@@ -59,8 +59,22 @@ export function useSpeechSynthesis() {
       if (!cleaned) return;
 
       const utterance = new SpeechSynthesisUtterance(cleaned);
-      if (femaleVoice) {
-        utterance.voice = femaleVoice;
+      const hasHindi = /[\u0900-\u097F]/.test(cleaned);
+
+      let selectedVoice = femaleVoice;
+      if (hasHindi) {
+        const hindiVoice =
+          voices.find((v) => v.lang.startsWith('hi') || v.name.toLowerCase().includes('hindi')) ||
+          voices.find((v) => v.lang.includes('IN')) ||
+          femaleVoice;
+        if (hindiVoice) {
+          selectedVoice = hindiVoice;
+          utterance.lang = 'hi-IN';
+        }
+      }
+
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
       }
       utterance.rate = rate;
       utterance.pitch = 1.05; // Slightly warm feminine pitch
@@ -77,7 +91,7 @@ export function useSpeechSynthesis() {
       utteranceRef.current = utterance;
       window.speechSynthesis.speak(utterance);
     },
-    [femaleVoice]
+    [femaleVoice, voices]
   );
 
   const stop = useCallback(() => {

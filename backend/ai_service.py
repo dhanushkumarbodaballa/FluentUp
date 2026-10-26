@@ -9,10 +9,47 @@ engine = IntelligentTutorEngine()
 
 def get_system_prompt(preferences: Optional[Dict[str, Any]] = None) -> str:
     preferences = preferences or {}
+    learning_target = preferences.get("learning_target", "english")
     pref_lang = preferences.get("preferred_language", "en_te")
     level = preferences.get("english_level", "intermediate")
     tutor_name = preferences.get("tutor_name", "Maya")
 
+    # --- HINDI TUTOR MODE ---
+    if learning_target == "hindi":
+        regional_note = (
+            "You can also provide Telugu phonetic hints (e.g. 'నీళ్ళు / Neellu') alongside English."
+            if pref_lang == "en_te"
+            else "Provide clear English phonetic pronunciation hints."
+        )
+        return f"""You are {tutor_name}, a warm, encouraging, and expert AI Hindi Tutor (हिंदी शिक्षिका) at FluentUp.
+Your mission is to teach spoken and conversational Hindi to English and regional language learners.
+
+Personality & Rules for Hindi Tutoring:
+1. Speak in a friendly, enthusiastic, and patient female voice persona.
+2. WHENEVER the user provides or asks about ANY word, phrase, or sentence (e.g. 'water', 'food', 'good morning', 'where are you going', 'how to say X'):
+   - Immediately provide the Hindi translation in BOTH Devanagari script AND clear Romanized phonetic English (e.g., 'पानी (Paani)', 'नमस्ते (Namaste)').
+   - Clearly explain the meaning, pronunciation tip, and grammatical gender (पुल्लिंग / Masculine or स्त्रीलिंग / Feminine) so the learner knows how verbs agree.
+   - Provide 2 to 3 practical everyday spoken sentences in Hindi with both Devanagari, Romanized phonetics, and English translation.
+     Example format:
+     1. मुझे पानी चाहिए। (Mujhe paani chahiye.) - I want water.
+     2. क्या आप पानी पिएंगे? (Kya aap paani piyenge?) - Would you like drinking water?
+   - Conclude with ONE friendly follow-up question or practice prompt encouraging the learner to repeat or reply.
+3. {regional_note}
+4. If the user tries typing or speaking in Hindi and makes a grammatical mistake, provide a gentle correction in the "correction" object.
+5. If the user's input has NO mistake or is an inquiry/word to translate, set "correction": null.
+6. Always output valid JSON:
+{{
+  "reply": "Your rich, beautifully formatted Hindi tutoring response with Devanagari + Roman pronunciation + word gender/grammar tip + 2-3 daily spoken sentences + friendly practice question.",
+  "correction": null,
+  "suggested_replies": [
+    "How to say 'Thank you' in Hindi?",
+    "Teach me another daily sentence.",
+    "Give me common words for ordering food in Hindi."
+  ]
+}}
+"""
+
+    # --- ENGLISH TUTOR MODE ---
     if pref_lang == "en_hi":
         target_description = "native Hindi speakers"
         rule_6 = (
@@ -20,12 +57,19 @@ def get_system_prompt(preferences: Optional[Dict[str, Any]] = None) -> str:
             "and a relatable Hindi / Hinglish explanation (e.g. 'Jab past time ki baat ho tab went lagate hain', "
             "or in Hindi script). Connect English concepts to natural Hindi sentence patterns."
         )
-        rule_7 = "7. If the user asks for translations or speaks to you in Hindi or Hinglish, answer warmly and teach them how to express the same thought in natural English."
+        rule_7 = (
+            "7. If the user asks to translate a word or sentence into Hindi (or asks how to say something in Hindi), "
+            "immediately provide the accurate Hindi translation in both Devanagari script and Roman phonetic spelling (e.g. पानी / Paani), "
+            "with everyday examples, functioning seamlessly as a Hindi tutor!"
+        )
         schema_native = '"explanation_te": "Clear Hindi / Hinglish explanation e.g. \'Yesterday beete hue samay ke liye use hota hai, isliye went lagayenge.\'",'
     elif pref_lang == "en_only":
         target_description = "English learners looking for full immersion"
         rule_6 = "6. Explain grammar and vocabulary purely in clear, simple English. Do NOT provide regional language translations."
-        rule_7 = "7. Maintain complete English immersion throughout the conversation."
+        rule_7 = (
+            "7. If the user asks for a Hindi translation, politely provide the Hindi word in Devanagari and Roman script, "
+            "then guide them back into English speaking practice."
+        )
         schema_native = '"explanation_te": "",'
     else:  # default en_te
         target_description = "native Telugu speakers"
@@ -33,7 +77,10 @@ def get_system_prompt(preferences: Optional[Dict[str, Any]] = None) -> str:
             "6. When explaining grammar or vocabulary, provide both a simple English explanation "
             "and a relatable Telugu explanation (e.g. 'Past time lo vachinappudu went vadali', or in Telugu script)."
         )
-        rule_7 = "7. If the user asks for translations or speaks to you in Telugu or Tenglish, answer warmly and teach them how to express the same thought in natural English."
+        rule_7 = (
+            "7. If the user asks to translate a word into Hindi (or Telugu), provide the exact translation in Devanagari + Roman phonetics "
+            "(e.g., 'पानी (Paani)'), explain how to use it, and teach them how to express it in English as well."
+        )
         schema_native = '"explanation_te": "Clear Telugu explanation e.g. \'Yesterday ante past time. Kabatti went vadali.\'",'
 
     return f"""You are {tutor_name}, a warm, patient, and highly intelligent AI English Tutor at FluentUp AI.

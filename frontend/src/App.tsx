@@ -68,6 +68,7 @@ export const App: React.FC = () => {
 
   // Settings & stats state
   const [settings, setSettings] = useState<UserSettings | null>(null);
+  const [learningTarget, setLearningTarget] = useState<'english' | 'hindi'>('english');
   const [stats, setStats] = useState<LearningStats | null>(null);
   const [vocabulary, setVocabulary] = useState<any[]>([]);
   const [savedCorrections, setSavedCorrections] = useState<any[]>([]);
@@ -154,6 +155,9 @@ export const App: React.FC = () => {
 
       setConversations(convs);
       setSettings(userSettings);
+      if (userSettings?.learning_target) {
+        setLearningTarget(userSettings.learning_target);
+      }
       setStats(userStats);
       setVocabulary(vocab);
       setSavedCorrections(corrs);
@@ -271,6 +275,7 @@ export const App: React.FC = () => {
         conversation_id: currentConversationId || undefined,
         message: text.trim(),
         audio_duration_seconds: durationSec,
+        learning_target: learningTarget,
       });
 
       const newAsstMsg: Message = {
@@ -346,6 +351,19 @@ export const App: React.FC = () => {
     updateSettings({ preferred_language: nextMode }).catch(console.error);
   };
 
+  const handleToggleLearningTarget = async (target?: 'english' | 'hindi') => {
+    const nextTarget = target || (learningTarget === 'english' ? 'hindi' : 'english');
+    setLearningTarget(nextTarget);
+    if (settings) {
+      setSettings({ ...settings, learning_target: nextTarget });
+    }
+    try {
+      await updateSettings({ learning_target: nextTarget });
+    } catch (e) {
+      console.error('Failed to save learning target:', e);
+    }
+  };
+
   // 1. Initial Auth Loading Screen
   if (isAuthChecking) {
     return (
@@ -418,21 +436,33 @@ export const App: React.FC = () => {
 
             {/* AI Tutor Info Header */}
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-xs">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-white shadow-xs ${
+                  learningTarget === 'hindi'
+                    ? 'bg-gradient-to-tr from-amber-500 via-orange-500 to-rose-500'
+                    : 'bg-gradient-to-tr from-brand-600 to-indigo-500'
+                }`}
+              >
                 <Sparkles className="w-4 h-4" />
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
                   <span className="text-xs font-bold text-slate-900 dark:text-white">Maya</span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full ${
+                      learningTarget === 'hindi' ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'
+                    }`}
+                  />
                   <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                    AI English Tutor
+                    {learningTarget === 'hindi' ? 'AI Hindi Tutor' : 'AI English Tutor'}
                   </span>
                 </div>
                 <div className="text-[10px] text-brand-600 dark:text-brand-400 font-medium flex items-center gap-1">
                   <Languages className="w-2.5 h-2.5" />
                   <span>
-                    {settings?.preferred_language === 'en_te'
+                    {learningTarget === 'hindi'
+                      ? 'Hindi Tutor (हिंदी सीखें)'
+                      : settings?.preferred_language === 'en_te'
                       ? 'Telugu + English'
                       : settings?.preferred_language === 'en_hi'
                       ? 'Hindi + English'
@@ -440,6 +470,30 @@ export const App: React.FC = () => {
                   </span>
                 </div>
               </div>
+            </div>
+
+            {/* Quick Tutor Mode Switcher in Header */}
+            <div className="hidden sm:flex items-center p-0.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs shadow-2xs">
+              <button
+                onClick={() => handleToggleLearningTarget('english')}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                  learningTarget === 'english'
+                    ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-2xs'
+                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                }`}
+              >
+                <span>🎓 English</span>
+              </button>
+              <button
+                onClick={() => handleToggleLearningTarget('hindi')}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                  learningTarget === 'hindi'
+                    ? 'bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-2xs'
+                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                }`}
+              >
+                <span>🇮🇳 Hindi</span>
+              </button>
             </div>
           </div>
 
@@ -491,6 +545,8 @@ export const App: React.FC = () => {
               tutorName={settings?.tutor_name || 'Maya'}
               userName={user?.name}
               onOpenAuth={() => setIsGuestMode(false)}
+              learningTarget={learningTarget}
+              onToggleLearningTarget={handleToggleLearningTarget}
             />
           ) : (
             <div className="max-w-3xl w-full mx-auto flex-1">
@@ -542,6 +598,8 @@ export const App: React.FC = () => {
           onResetTranscript={resetTranscript}
           languageMode={settings?.preferred_language || 'en_te'}
           onToggleLanguageMode={handleToggleLanguageMode}
+          learningTarget={learningTarget}
+          onToggleLearningTarget={handleToggleLearningTarget}
         />
       </main>
 

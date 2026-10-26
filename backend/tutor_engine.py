@@ -240,11 +240,239 @@ def analyze_grammar(text: str, pref_lang: str = "en_te") -> Optional[Dict[str, s
                 }
     return None
 
+HINDI_TUTOR_DICTIONARY = {
+    "water": {
+        "dev": "पानी",
+        "rom": "Paani",
+        "gender": "Masculine noun (पुल्लिंग)",
+        "tip": "In Hindi, water is grammatically masculine. So verbs and adjectives take masculine forms (e.g., 'paani thanda hai').",
+        "ex1": ("मुझे पीने का पानी चाहिए।", "Mujhe peene ka paani chahiye.", "I want drinking water."),
+        "ex2": ("क्या आप पानी पिएंगे?", "Kya aap paani piyenge?", "Would you like to drink water?"),
+        "practice": "Mujhe ek glass paani chahiye"
+    },
+    "food": {
+        "dev": "खाना",
+        "rom": "Khaana",
+        "gender": "Masculine noun (पुल्लिंग)",
+        "tip": "'Khaana' is both the noun (food) and the verb (to eat).",
+        "ex1": ("खाना बहुत स्वादिष्ट है!", "Khaana bohot swaadisht hai!", "The food is very delicious!"),
+        "ex2": ("क्या आपने खाना खाया?", "Kya aapne khaana khaya?", "Did you eat food?"),
+        "practice": "Khaana bohot swaadisht hai"
+    },
+    "tea": {
+        "dev": "चाय",
+        "rom": "Chaay",
+        "gender": "Feminine noun (स्त्रीलिंग)",
+        "tip": "'Chai' is grammatically feminine. So you say 'garam chai' and 'chai acchi hai'.",
+        "ex1": ("मुझे एक कप गर्म चाय चाहिए।", "Mujhe ek cup garm chai chahiye.", "I want a cup of hot tea."),
+        "ex2": ("क्या आप चाय पिएंगे?", "Kya aap chai piyenge?", "Will you have some tea?"),
+        "practice": "Mujhe ek cup chai dijiye"
+    },
+    "friend": {
+        "dev": "दोस्त / मित्र",
+        "rom": "Dost / Mitra",
+        "gender": "Common noun",
+        "tip": "'Dost' is the most popular conversational word; 'Mitra' is more formal Hindi.",
+        "ex1": ("वह मेरा सबसे अच्छा दोस्त है।", "Woh mera sabse accha dost hai.", "He is my best friend."),
+        "ex2": ("हम अच्छे दोस्त हैं।", "Hum acche dost hain.", "We are good friends."),
+        "practice": "Aap mere acche dost hain"
+    },
+    "thank you": {
+        "dev": "धन्यवाद / शुक्रिया",
+        "rom": "Dhanyavaad / Shukriya",
+        "gender": "Greeting expression",
+        "tip": "'Dhanyavaad' is formal/traditional; 'Shukriya' is warm everyday conversational Hindi.",
+        "ex1": ("आपकी मदद के लिए बहुत-बहुत धन्यवाद।", "Aapki madad ke liye bohot-bohot dhanyavaad.", "Thank you very much for your help."),
+        "ex2": ("शुक्रिया दोस्त!", "Shukriya dost!", "Thanks friend!"),
+        "practice": "Bohot-bohot dhanyavaad"
+    },
+    "hello": {
+        "dev": "नमस्ते",
+        "rom": "Namaste / Pranaam",
+        "gender": "Greeting expression",
+        "tip": "'Namaste' is the timeless respectful Indian greeting, joining both hands together.",
+        "ex1": ("नमस्ते! आप कैसे हैं?", "Namaste! Aap kaise hain?", "Hello! How are you?"),
+        "ex2": ("नमस्ते, मेरा नाम धनुष है।", "Namaste, mera naam Dhanush hai.", "Hello, my name is Dhanush."),
+        "practice": "Namaste! Aap kaise hain?"
+    },
+    "good morning": {
+        "dev": "शुभ प्रभात / नमस्ते",
+        "rom": "Shubh Prabhaat / Namaste",
+        "gender": "Greeting expression",
+        "tip": "'Shubh Prabhaat' is formal morning greeting. In daily spoken life, 'Namaste' is also universally used.",
+        "ex1": ("शुभ प्रभात! आपका दिन मंगलमय हो।", "Shubh prabhaat! Aapka din mangalmay ho.", "Good morning! Have a wonderful day."),
+        "ex2": ("सुप्रभात, आप कैसे हैं?", "Suprabhaat, aap kaise hain?", "Good morning, how are you?"),
+        "practice": "Shubh prabhaat! Aaj ka din accha ho"
+    },
+    "good night": {
+        "dev": "शुभ रात्रि",
+        "rom": "Shubh Raatri",
+        "gender": "Night greeting",
+        "tip": "Said before going to sleep at night.",
+        "ex1": ("शुभ रात्रि, अच्छे सपने देखें।", "Shubh raatri, acche sapne dekhein.", "Good night, sweet dreams."),
+        "ex2": ("कल मिलते हैं, शुभ रात्रि।", "Kal milte hain, shubh raatri.", "See you tomorrow, good night."),
+        "practice": "Shubh raatri, kal milte hain"
+    },
+    "book": {
+        "dev": "किताब / पुस्तक",
+        "rom": "Kitaab / Pustak",
+        "gender": "Feminine noun (स्त्रीलिंग)",
+        "tip": "'Kitaab' is feminine, so adjectives take feminine endings (e.g., 'acchi kitaab').",
+        "ex1": ("यह मेरी पसंदीदा किताब है।", "Yeh meri pasandeeda kitaab hai.", "This is my favorite book."),
+        "ex2": ("मैं एक नई किताब पढ़ रहा हूँ।", "Main ek nayi kitaab padh raha hoon.", "I am reading a new book."),
+        "practice": "Main ek kitaab padh raha hoon"
+    },
+    "house": {
+        "dev": "घर",
+        "rom": "Ghar",
+        "gender": "Masculine noun (पुल्लिंग)",
+        "tip": "'Ghar' represents home and hearth.",
+        "ex1": ("यह मेरा घर है।", "Yeh mera ghar hai.", "This is my home."),
+        "ex2": ("मैं घर पर हूँ।", "Main ghar par hoon.", "I am at home."),
+        "practice": "Mera ghar bohot sundar hai"
+    },
+    "home": {
+        "dev": "घर",
+        "rom": "Ghar",
+        "gender": "Masculine noun (पुल्लिंग)",
+        "tip": "'Ghar' is used for both home and house.",
+        "ex1": ("मैं घर जा रहा हूँ।", "Main ghar ja raha hoon.", "I am going home."),
+        "ex2": ("क्या आप घर पर हैं?", "Kya aap ghar par hain?", "Are you at home?"),
+        "practice": "Main ghar ja raha hoon"
+    },
+    "help": {
+        "dev": "मदद / सहायता",
+        "rom": "Madad / Sahaayata",
+        "gender": "Feminine noun (स्त्रीलिंग)",
+        "tip": "'Madad' is feminine ('Aapki madad').",
+        "ex1": ("क्या आप मेरी मदद कर सकते हैं?", "Kya aap meri madad kar sakte hain?", "Could you please help me?"),
+        "ex2": ("मुझे आपकी मदद चाहिए।", "Mujhe aapki madad chahiye.", "I need your help."),
+        "practice": "Kya aap meri madad karenge?"
+    },
+    "time": {
+        "dev": "समय / वक़्त",
+        "rom": "Samay / Waqt",
+        "gender": "Masculine noun (पुल्लिंग)",
+        "tip": "To ask the time in Hindi, say 'Kitne baje hain?' or 'Kya samay hua hai?'.",
+        "ex1": ("अभी क्या समय हुआ है?", "Abhi kya samay hua hai?", "What time is it right now?"),
+        "ex2": ("मेरे पास अभी समय नहीं है।", "Mere paas abhi samay nahi hai.", "I don't have time right now."),
+        "practice": "Kitne baje hain?"
+    },
+    "money": {
+        "dev": "पैसे / रुपया",
+        "rom": "Paise / Rupaya",
+        "gender": "Plural masculine",
+        "tip": "'Paise' is used when shopping, paying fares, or discussing cost.",
+        "ex1": ("इसके कितने पैसे हुए?", "Iske kitne paise hue?", "How much money does this cost?"),
+        "ex2": ("मेरे पास खुले पैसे हैं।", "Mere paas khule paise hain.", "I have change."),
+        "practice": "Iske kitne paise hue?"
+    },
+    "work": {
+        "dev": "काम",
+        "rom": "Kaam",
+        "gender": "Masculine noun (पुल्लिंग)",
+        "tip": "'Kaam' means work or job.",
+        "ex1": ("मैं अभी काम कर रहा हूँ।", "Main abhi kaam kar raha hoon.", "I am working right now."),
+        "ex2": ("आज मुझे बहुत काम है।", "Aaj mujhe bohot kaam hai.", "I have a lot of work today."),
+        "practice": "Aaj mujhe bohot kaam hai"
+    },
+    "how are you": {
+        "dev": "आप कैसे हैं?",
+        "rom": "Aap kaise hain? (to male) / Aap kaisi hain? (to female)",
+        "gender": "Respectful question",
+        "tip": "'Aap' expresses polite respect. When speaking to close friends, you can say 'Tum kaise ho?'.",
+        "ex1": ("नमस्ते! आप कैसे हैं?", "Namaste! Aap kaise hain?", "Hello! How are you?"),
+        "ex2": ("मैं बिल्कुल ठीक हूँ, आप बताइए?", "Main bilkul theek hoon, aap bataiye?", "I am completely fine, what about you?"),
+        "practice": "Main theek hoon, aap kaise hain?"
+    },
+    "where are you going": {
+        "dev": "आप कहाँ जा रहे हैं?",
+        "rom": "Aap kahaan ja rahe hain? (to male) / ja rahi hain? (to female)",
+        "gender": "Conversational question",
+        "tip": "Hindi verbs change ending with gender (-rahe for masculine, -rahi for feminine).",
+        "ex1": ("आप इतनी जल्दी कहाँ जा रहे हैं?", "Aap itni jaldi kahaan ja rahe hain?", "Where are you going so early?"),
+        "ex2": ("मैं कॉलेज जा रहा हूँ।", "Main college ja raha hoon.", "I am going to college."),
+        "practice": "Main college ja raha hoon"
+    },
+    "what is your name": {
+        "dev": "आपका नाम क्या है?",
+        "rom": "Aapka naam kya hai?",
+        "gender": "Respectful question",
+        "tip": "Reply with 'Mera naam ... hai' (My name is ...).",
+        "ex1": ("नमस्ते! आपका नाम क्या है?", "Namaste! Aapka naam kya hai?", "Hello! What is your name?"),
+        "ex2": ("मेरा नाम धनुष है।", "Mera naam Dhanush hai.", "My name is Dhanush."),
+        "practice": "Mera naam Maya hai"
+    },
+    "sleep": {
+        "dev": "सोना / नींद",
+        "rom": "Sona / Neend",
+        "gender": "Verb / Feminine noun",
+        "tip": "'Mujhe neend aa rahi hai' means 'I am feeling sleepy'.",
+        "ex1": ("मुझे अब सोना चाहिए।", "Mujhe ab sona chahiye.", "I should sleep now."),
+        "ex2": ("मुझे बहुत तेज़ नींद आ रही है।", "Mujhe bohot tez neend aa rahi hai.", "I am feeling very sleepy."),
+        "practice": "Mujhe neend aa rahi hai"
+    },
+    "eat": {
+        "dev": "खाना",
+        "rom": "Khaana",
+        "gender": "Verb",
+        "tip": "'Maine khaya' (I ate), 'Main kha raha hoon' (I am eating).",
+        "ex1": ("आइए साथ मिलकर खाना खाते हैं।", "Aaiye saath milkar khaana khaate hain.", "Come, let's eat together."),
+        "ex2": ("आपने नाश्ता किया?", "Aapne naashta kiya?", "Did you have breakfast?"),
+        "practice": "Maine khaana kha liya"
+    },
+    "drink": {
+        "dev": "पीना",
+        "rom": "Peena",
+        "gender": "Verb",
+        "tip": "'Paani piyo' (drink water), 'Chai peena' (to drink tea).",
+        "ex1": ("गर्म पानी पीजिए।", "Garm paani peejiye.", "Drink warm water."),
+        "ex2": ("मैं चाय पी रहा हूँ।", "Main chai pee raha hoon.", "I am drinking tea."),
+        "practice": "Main paani pee raha hoon"
+    },
+    "go": {
+        "dev": "जाना",
+        "rom": "Jaana",
+        "gender": "Verb",
+        "tip": "'Jao' (informal), 'Jaaiye' (polite).",
+        "ex1": ("मुझे बाज़ार जाना है।", "Mujhe bazaar jaana hai.", "I have to go to the market."),
+        "ex2": ("हम सब साथ जाएंगे।", "Hum sab saath jaayenge.", "We will all go together."),
+        "practice": "Mujhe abhi jaana hai"
+    },
+    "come": {
+        "dev": "आना",
+        "rom": "Aana",
+        "gender": "Verb",
+        "tip": "'Aao' (informal), 'Aaiye' (polite).",
+        "ex1": ("कृपया अंदर आइए।", "Kripya andar aaiye.", "Please come inside."),
+        "ex2": ("मैं कल सुबह आऊंगा।", "Main kal subah aaunga.", "I will come tomorrow morning."),
+        "practice": "Kripya andar aaiye"
+    },
+    "speak": {
+        "dev": "बोलना",
+        "rom": "Bolna",
+        "gender": "Verb",
+        "tip": "'Bolna' means to speak.",
+        "ex1": ("क्या आप हिंदी बोल सकते हैं?", "Kya aap Hindi bol sakte hain?", "Can you speak Hindi?"),
+        "ex2": ("थोड़ा धीरे बोलिए।", "Thoda dheere boliye.", "Please speak a bit slowly."),
+        "practice": "Main Hindi bol sakta hoon"
+    },
+    "learn": {
+        "dev": "सीखना",
+        "rom": "Seekhna",
+        "gender": "Verb",
+        "tip": "'Seekhna' means to learn.",
+        "ex1": ("मैं हिंदी बोलना सीख रहा हूँ।", "Main Hindi bolna seekh raha hoon.", "I am learning to speak Hindi."),
+        "ex2": ("हिंदी सीखना बहुत आसान है।", "Hindi seekhna bohot aasaan hai.", "Learning Hindi is very easy."),
+        "practice": "Main roz Hindi seekhta hoon"
+    }
+}
+
 class IntelligentTutorEngine:
     """
-    Intelligent built-in conversational English tutor engine.
-    Specializes in spoken English, Telugu/Hindi bilingual explanations,
-    natural conversational continuation, and gentle constructive corrections.
+    Intelligent built-in conversational tutor engine.
+    Supports English Speaking Coaching AND Hindi Tutoring with word translations,
+    pronunciation guides, gender/grammar notes, and daily spoken practice.
     """
 
     def __init__(self):
@@ -259,7 +487,104 @@ class IntelligentTutorEngine:
         text = user_message.strip()
         lower_text = text.lower()
         pref_lang = preferences.get("preferred_language", "en_te")
+        learning_target = preferences.get("learning_target", "english")
 
+        # Check if user is in Hindi Tutor mode OR explicitly asking for Hindi translation
+        is_hindi_mode = (learning_target == "hindi") or any(w in lower_text for w in [
+            "in hindi", "to hindi", "into hindi", "translate in hindi", "translate to hindi",
+            "hindi me", "hindi mein", "hindi me batao", "hindi meaning", "hindi tutor",
+            "learn hindi", "how to say in hindi"
+        ])
+
+        # --- HINDI TUTOR MODE HANDLER ---
+        if is_hindi_mode:
+            # Clean trigger words to find the target word to teach/translate
+            cleaned_target = re.sub(
+                r"\b(how to say|what is|meaning of|translate|in hindi|to hindi|into hindi|hindi me|hindi mein|hindi meaning|please|tell me|can you)\b",
+                "",
+                lower_text
+            ).strip().strip("?'\".,")
+
+            # Check greetings in Hindi mode
+            if lower_text in ["hi", "hello", "hey", "namaste", "good morning", "good evening", "good afternoon", "hi there", "namaskar"]:
+                return {
+                    "reply": (
+                        f"नमस्ते! (Namaste!) मैं {self.tutor_name} हूँ, आपकी AI हिंदी ट्यूटर (Hindi Tutor)!\n\n"
+                        "आप English या Telugu में कोई भी शब्द या वाक्य बोलें या लिखें — मैं आपको उसका हिंदी अनुवाद, "
+                        "सही उच्चारण (Pronunciation), और रोज़मर्रा की बातचीत में इस्तेमाल करना सिखाऊँगी!\n\n"
+                        "👉 What word or sentence would you like to translate into Hindi today?"
+                    ),
+                    "correction": None,
+                    "suggested_replies": [
+                        "How to say 'Water' in Hindi?",
+                        "How to say 'Thank you' in Hindi?",
+                        "Teach me daily greetings in Hindi."
+                    ],
+                    "intent": "hindi_tutor_greeting"
+                }
+
+            # Check matching word in our comprehensive dictionary
+            matched_entry = None
+            matched_word = None
+            if cleaned_target in HINDI_TUTOR_DICTIONARY:
+                matched_entry = HINDI_TUTOR_DICTIONARY[cleaned_target]
+                matched_word = cleaned_target
+            else:
+                for k, v in HINDI_TUTOR_DICTIONARY.items():
+                    if k in lower_text:
+                        matched_entry = v
+                        matched_word = k
+                        break
+
+            if matched_entry and matched_word:
+                dev = matched_entry["dev"]
+                rom = matched_entry["rom"]
+                gender = matched_entry["gender"]
+                tip = matched_entry["tip"]
+                ex1 = matched_entry["ex1"]
+                ex2 = matched_entry["ex2"]
+                practice = matched_entry["practice"]
+
+                reply = (
+                    f"**{matched_word.title()}** in Hindi is **{dev} ({rom})**!\n\n"
+                    f"🇮🇳 **Hindi Translation:** {dev} *({rom})*\n"
+                    f"🗣️ **Gender & Grammar:** {gender}. {tip}\n\n"
+                    f"💬 **Daily Spoken Sentences:**\n"
+                    f"1. {ex1[0]} *({ex1[1]})* — {ex1[2]}\n"
+                    f"2. {ex2[0]} *({ex2[1]})* — {ex2[2]}\n\n"
+                    f"👉 **Try saying it out loud:** *'{practice}'*!\n\n"
+                    f"Would you like to learn another Hindi word or sentence?"
+                )
+                return {
+                    "reply": reply,
+                    "correction": None,
+                    "suggested_replies": [
+                        "Teach me words for food and tea in Hindi.",
+                        "How to say 'Where are you going?' in Hindi.",
+                        "How to say 'Thank you' in Hindi?"
+                    ],
+                    "intent": "hindi_word_lesson"
+                }
+
+            # If not in dictionary, provide a rich, encouraging Hindi tutoring response
+            return {
+                "reply": (
+                    f"In Hindi, to express **'{text}'**:\n\n"
+                    f"🇮🇳 **Spoken Tip:** In conversational Hindi, keep your sentence simple with Subject + Object + Verb.\n\n"
+                    f"For example, to say *'I want {text}'*, say: **'मुझे {text} चाहिए' (Mujhe {text} chahiye)**.\n"
+                    f"To ask politely, say: **'क्या आपके पास {text} है?' (Kya aapke paas {text} hai?)**.\n\n"
+                    f"👉 Repeat this once: *'Mujhe {text} chahiye'*. What other word would you like to translate?"
+                ),
+                "correction": None,
+                "suggested_replies": [
+                    "How to say 'Water' in Hindi?",
+                    "How to say 'Food' in Hindi?",
+                    "How to say 'Friend' in Hindi?"
+                ],
+                "intent": "hindi_tutoring_general"
+            }
+
+        # --- STANDARD ENGLISH TUTOR MODE ---
         # 1. Check for grammar correction opportunities
         correction = analyze_grammar(text, pref_lang=pref_lang)
 
@@ -295,7 +620,7 @@ class IntelligentTutorEngine:
                 "intent": "interview"
             }
 
-        # Hindi translation / explain in Hindi
+        # Hindi translation request in English mode
         if any(w in lower_text for w in ["in hindi", "hindi me", "hindi mein", "hindi me batao", "hindi meaning", "translate to hindi"]):
             return {
                 "reply": "Bilkul! (Sure!) Main Hindi mein samjhane ke liye taiyar hoon.\n\nJab bhi aap koi naya sentence seekhein, uske idea ko apni bhasha se connect karein, fir English me naturally bolein.\n\nAap kya poochna chahte hain? (What would you like me to translate or explain?)",
